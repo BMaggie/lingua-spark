@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -29,49 +30,84 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
       if (mode === 'login') {
-        // Mock login validation
-        if (formData.email && formData.password) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) {
+          toast({
+            title: "Login Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else if (data.user) {
           const user = {
-            name: formData.email.split('@')[0],
-            role: formData.email.includes('admin') ? 'admin' as const : 'user' as const
+            name: data.user.email?.split('@')[0] || 'User',
+            role: data.user.email?.includes('admin') ? 'admin' as const : 'user' as const
           };
           onAuthSuccess(user);
+          onClose();
           toast({
             title: "Welcome back!",
-            description: `Logged in as ${user.role}`,
+            description: `Logged in successfully`,
           });
-        } else {
+        }
+      } else {
+        // Signup
+        if (!formData.name || !formData.email || !formData.password) {
           toast({
             title: "Error",
             description: "Please fill in all fields",
             variant: "destructive"
           });
+          setIsLoading(false);
+          return;
         }
-      } else {
-        // Mock signup
-        if (formData.name && formData.email && formData.password) {
+
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              name: formData.name,
+              role: formData.role
+            },
+            emailRedirectTo: `${window.location.origin}/`
+          }
+        });
+
+        if (error) {
+          toast({
+            title: "Signup Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else if (data.user) {
           const user = {
             name: formData.name,
             role: formData.role
           };
           onAuthSuccess(user);
+          onClose();
           toast({
             title: "Account created!",
-            description: `Welcome to LinguaSpark, ${user.name}!`,
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: "Please fill in all fields",
-            variant: "destructive"
+            description: `Welcome to LinguaSpark, ${formData.name}!`,
           });
         }
       }
+    } catch (error) {
+      console.error('Auth error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -138,6 +174,7 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 required
+                minLength={6}
               />
               <Button
                 type="button"
@@ -202,7 +239,7 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
 
         <div className="text-center text-sm text-gray-500 mt-4">
           {mode === 'login' ? (
-            <p>Demo credentials: Any email/password combination works</p>
+            <p>Enter your credentials to access your account</p>
           ) : (
             <p>All fields are required to create your account</p>
           )}
