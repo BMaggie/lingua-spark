@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,8 @@ import LandingPage from '@/components/LandingPage';
 import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
-import { BookOpen, Star, User, Clock } from 'lucide-react';
+import ProfileDropdown from '@/components/ProfileDropdown';
+import { BookOpen, Star } from 'lucide-react';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'app'>('landing');
@@ -71,10 +71,11 @@ const Index = () => {
                 <span className="font-semibold">{userProgress.points}</span>
               </div>
               <div className="text-sm text-gray-600">Level {userProgress.level}</div>
-              <Button variant="outline" size="sm">
-                <User className="h-4 w-4 mr-2" />
-                Profile
-              </Button>
+              <ProfileDropdown 
+                userProgress={userProgress}
+                languages={selectedLanguages}
+                onBackToLanding={handleBackToLanding}
+              />
             </div>
           </div>
         </div>
