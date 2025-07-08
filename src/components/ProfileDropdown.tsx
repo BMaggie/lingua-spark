@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { User, LogOut, Star, Target, Globe, X } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,15 +29,46 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ userProgress, languages, onBackToLanding }: ProfileDropdownProps) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
-  // Mock user data - in a real app this would come from your auth/profile system
-  const userData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "", // Empty for fallback
-    joinDate: "March 2024",
+  const [userData, setUserData] = useState({
+    name: "User",
+    email: "",
+    avatar: "",
+    joinDate: "Recently",
     goals: ["Complete 100 lessons", "Reach fluency level", "Practice daily"],
-    languagesSpoken: ["English", "Spanish"]
+    languagesSpoken: ["English"]
+  });
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          setUserData({
+            name: profile.full_name || profile.username || user.email?.split('@')[0] || "User",
+            email: user.email || "",
+            avatar: profile.avatar_url || "",
+            joinDate: new Date(profile.created_at).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long' 
+            }),
+            goals: ["Complete 100 lessons", "Reach fluency level", "Practice daily"],
+            languagesSpoken: ["English"]
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
   };
 
   const handleProfileClick = () => {

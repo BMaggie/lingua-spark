@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,8 @@ import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
 import ProfileDropdown from '@/components/ProfileDropdown';
-import { BookOpen, Star } from 'lucide-react';
+import AdminDashboard from '@/components/AdminDashboard';
+import { BookOpen, Star, Settings } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from '@supabase/supabase-js';
 
@@ -23,22 +25,62 @@ const Index = () => {
   });
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [userRole, setUserRole] = useState<'user' | 'admin'>('user');
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user && currentView === 'landing') {
-          // User is authenticated, but we still need language selection
-          // The language selection modal will be handled by LandingPage component
+        if (session?.user) {
+          // Fetch user profile to get role
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+          
+          setUserRole(profile?.role || 'user');
+          
+          // Fetch or create user stats
+          const { data: stats } = await supabase
+            .from('user_stats')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (stats) {
+            setUserProgress({
+              wordsLearned: stats.words_learned || 0,
+              streak: stats.streak || 0,
+              points: stats.points || 0,
+              level: stats.level || 1
+            });
+          } else {
+            // Create initial stats record
+            await supabase
+              .from('user_stats')
+              .insert({
+                user_id: session.user.id,
+                words_learned: 0,
+                streak: 0,
+                points: 0,
+                level: 1
+              });
+          }
+          
+          if (currentView === 'landing') {
+            // User is authenticated, but we still need language selection
+            // The language selection modal will be handled by LandingPage component
+          }
         } else if (!session?.user) {
           // User logged out, return to landing
           setCurrentView('landing');
           setSelectedLanguages({ base: '', target: '' });
+          setUserRole('user');
         }
       }
     );
@@ -52,23 +94,52 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [currentView]);
 
-  const handleLanguageSelect = (languages: { base: string; target: string }) => {
+  const handleLanguageSelect = async (languages: { base: string; target: string }) => {
     setSelectedLanguages(languages);
     setCurrentView('app');
     setCurrentSection('dashboard');
+    
+    // Update user stats with selected languages
+    if (user) {
+      await supabase
+        .from('user_stats')
+        .upsert({
+          user_id: user.id,
+          base_language: languages.base,
+          target_language: languages.target,
+          words_learned: userProgress.wordsLearned,
+          streak: userProgress.streak,
+          points: userProgress.points,
+          level: userProgress.level
+        });
+    }
   };
 
   const handleSectionChange = (section: string) => {
     setCurrentSection(section);
   };
 
-  const updateProgress = (points: number, wordsLearned: number = 0) => {
-    setUserProgress(prev => ({
-      ...prev,
-      points: prev.points + points,
-      wordsLearned: prev.wordsLearned + wordsLearned,
-      level: Math.floor((prev.points + points) / 100) + 1
-    }));
+  const updateProgress = async (points: number, wordsLearned: number = 0) => {
+    const newProgress = {
+      ...userProgress,
+      points: userProgress.points + points,
+      wordsLearned: userProgress.wordsLearned + wordsLearned,
+      level: Math.floor((userProgress.points + points) / 100) + 1
+    };
+    
+    setUserProgress(newProgress);
+    
+    // Update in database
+    if (user) {
+      await supabase
+        .from('user_stats')
+        .upsert({
+          user_id: user.id,
+          ...newProgress,
+          base_language: selectedLanguages.base,
+          target_language: selectedLanguages.target
+        });
+    }
   };
 
   const handleBackToLanding = async () => {
@@ -77,6 +148,7 @@ const Index = () => {
     setSelectedLanguages({ base: '', target: '' });
     setUser(null);
     setSession(null);
+    setUserRole('user');
   };
 
   // If user is not authenticated, show landing page
@@ -84,7 +156,6 @@ const Index = () => {
     return <LandingPage onLanguageSelect={handleLanguageSelect} />;
   }
 
-  // If user is authenticated but hasn't selected languages, this will be handled by LandingPage
   // If user is authenticated and has selected languages, show the app
   if (selectedLanguages.base && selectedLanguages.target) {
     return (
@@ -144,6 +215,16 @@ const Index = () => {
               >
                 Quiz
               </Button>
+              {userRole === 'admin' && (
+                <Button 
+                  variant={currentSection === 'admin' ? 'default' : 'ghost'}
+                  onClick={() => handleSectionChange('admin')}
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Admin
+                </Button>
+              )}
             </div>
           </div>
         </nav>
@@ -169,6 +250,10 @@ const Index = () => {
               languages={selectedLanguages}
               onProgress={updateProgress}
             />
+          )}
+          
+          {currentSection === 'admin' && userRole === 'admin' && (
+            <AdminDashboard />
           )}
         </main>
 

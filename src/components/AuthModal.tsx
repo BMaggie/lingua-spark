@@ -44,9 +44,16 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
             variant: "destructive"
           });
         } else if (data.user) {
+          // Fetch user profile from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+
           const user = {
-            name: data.user.email?.split('@')[0] || 'User',
-            role: data.user.email?.includes('admin') ? 'admin' as const : 'user' as const
+            name: profile?.full_name || profile?.username || data.user.email?.split('@')[0] || 'User',
+            role: (profile?.role as 'admin' | 'user') || 'user'
           };
           onAuthSuccess(user);
           onClose();
@@ -72,7 +79,8 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
           password: formData.password,
           options: {
             data: {
-              name: formData.name,
+              full_name: formData.name,
+              username: formData.name.toLowerCase().replace(/\s+/g, '_'),
               role: formData.role
             },
             emailRedirectTo: `${window.location.origin}/`
