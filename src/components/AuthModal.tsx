@@ -156,7 +156,7 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
             />
             {mode === 'login' && (
               <p className="text-xs text-gray-500">
-                Use email with "admin" for admin access (e.g., admin@test.com)
+                {/* Use email with "admin" for admin access (e.g., admin@test.com) */}
               </p>
             )}
           </div>
@@ -190,12 +190,12 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
 
           {mode === 'signup' && (
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              {/* <Label className="flex items-center gap-2">
                 <Shield className="h-4 w-4" />
                 Account Type
-              </Label>
+              </Label> */}
               <div className="flex gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
+                {/* <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
                     name="role"
@@ -205,8 +205,8 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
                     className="text-blue-600"
                   />
                   <span className="text-sm">Learner</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
+                </label> */}
+                {/* <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
                     name="role"
@@ -216,7 +216,7 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
                     className="text-blue-600"
                   />
                   <span className="text-sm">Admin</span>
-                </label>
+                </label> */}
               </div>
             </div>
           )}
