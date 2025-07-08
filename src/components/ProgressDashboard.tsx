@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Star, Clock, User } from 'lucide-react';
+import { BookOpen, Star, Clock, User, Check } from 'lucide-react';
 
 interface ProgressDashboardProps {
   progress: {
