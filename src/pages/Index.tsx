@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,7 +42,9 @@ const Index = () => {
             .eq('id', session.user.id)
             .single();
           
-          setUserRole(profile?.role || 'user');
+          // Properly type the role assignment
+          const role = profile?.role as 'admin' | 'user';
+          setUserRole(role || 'user');
           
           // Fetch or create user stats
           const { data: stats } = await supabase
