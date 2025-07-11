@@ -1,13 +1,16 @@
+
 import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from 'framer-motion';
 import LandingPage from '@/components/LandingPage';
 import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
 import ProfileDropdown from '@/components/ProfileDropdown';
 import AdminDashboard from '@/components/AdminDashboard';
+import AnimatedLoader from '@/components/AnimatedLoader';
 import { BookOpen, Star, Settings } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from '@supabase/supabase-js';
@@ -25,6 +28,7 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [userRole, setUserRole] = useState<'user' | 'admin'>('user');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Set up auth state listener
@@ -83,6 +87,8 @@ const Index = () => {
           setSelectedLanguages({ base: '', target: '' });
           setUserRole('user');
         }
+        
+        setIsLoading(false);
       }
     );
 
@@ -90,6 +96,7 @@ const Index = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -152,6 +159,15 @@ const Index = () => {
     setUserRole('user');
   };
 
+  // Show loading animation while checking auth state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <AnimatedLoader text="Loading LinguaSpark..." />
+      </div>
+    );
+  }
+
   // If user is not authenticated, show landing page
   if (!user || currentView === 'landing') {
     return <LandingPage onLanguageSelect={handleLanguageSelect} />;
@@ -160,27 +176,42 @@ const Index = () => {
   // If user is authenticated and has selected languages, show the app
   if (selectedLanguages.base && selectedLanguages.target) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <header className="bg-white shadow-sm border-b">
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.header 
+          className="bg-white shadow-sm border-b"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="container mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-4">
-                <button 
+                <motion.button 
                   onClick={handleBackToLanding}
-                  className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+                  className="text-2xl font-bold gradient-text hover:opacity-80 transition-opacity"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   LinguaSpark
-                </button>
+                </motion.button>
                 <span className="text-sm text-gray-500">
                   {selectedLanguages.base} → {selectedLanguages.target}
                 </span>
               </div>
               
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <Star className="h-4 w-4 text-yellow-500" />
+                <motion.div 
+                  className="flex items-center space-x-2"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Star className="h-4 w-4 text-yellow-500 animate-pulse" />
                   <span className="font-semibold">{userProgress.points}</span>
-                </div>
+                </motion.div>
                 <div className="text-sm text-gray-600">Level {userProgress.level}</div>
                 <ProfileDropdown 
                   userProgress={userProgress}
@@ -190,76 +221,84 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </header>
+        </motion.header>
 
-        <nav className="bg-white border-b">
+        <motion.nav 
+          className="bg-white border-b"
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <div className="container mx-auto px-4">
             <div className="flex space-x-8">
-              <Button 
-                variant={currentSection === 'dashboard' ? 'default' : 'ghost'}
-                onClick={() => handleSectionChange('dashboard')}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500"
-              >
-                Dashboard
-              </Button>
-              <Button 
-                variant={currentSection === 'vocabulary' ? 'default' : 'ghost'}
-                onClick={() => handleSectionChange('vocabulary')}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500"
-              >
-                Vocabulary
-              </Button>
-              <Button 
-                variant={currentSection === 'quiz' ? 'default' : 'ghost'}
-                onClick={() => handleSectionChange('quiz')}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500"
-              >
-                Quiz
-              </Button>
-              {userRole === 'admin' && (
-                <Button 
-                  variant={currentSection === 'admin' ? 'default' : 'ghost'}
-                  onClick={() => handleSectionChange('admin')}
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500"
+              {[
+                { key: 'dashboard', label: 'Dashboard' },
+                { key: 'vocabulary', label: 'Vocabulary' },
+                { key: 'quiz', label: 'Quiz' },
+                ...(userRole === 'admin' ? [{ key: 'admin', label: 'Admin', icon: Settings }] : [])
+              ].map((item, index) => (
+                <motion.div
+                  key={item.key}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Admin
-                </Button>
-              )}
+                  <Button 
+                    variant={currentSection === item.key ? 'default' : 'ghost'}
+                    onClick={() => handleSectionChange(item.key)}
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 transition-all duration-300"
+                  >
+                    {item.icon && <item.icon className="h-4 w-4 mr-2" />}
+                    {item.label}
+                  </Button>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </nav>
+        </motion.nav>
 
         <main className="container mx-auto px-4 py-8">
-          {currentSection === 'dashboard' && (
-            <ProgressDashboard 
-              progress={userProgress}
-              languages={selectedLanguages}
-              onSectionChange={handleSectionChange}
-            />
-          )}
-          
-          {currentSection === 'vocabulary' && (
-            <VocabularyCard 
-              languages={selectedLanguages}
-              onProgress={updateProgress}
-            />
-          )}
-          
-          {currentSection === 'quiz' && (
-            <QuizSection 
-              languages={selectedLanguages}
-              onProgress={updateProgress}
-            />
-          )}
-          
-          {currentSection === 'admin' && userRole === 'admin' && (
-            <AdminDashboard />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {currentSection === 'dashboard' && (
+                <ProgressDashboard 
+                  progress={userProgress}
+                  languages={selectedLanguages}
+                  onSectionChange={handleSectionChange}
+                />
+              )}
+              
+              {currentSection === 'vocabulary' && (
+                <VocabularyCard 
+                  languages={selectedLanguages}
+                  onProgress={updateProgress}
+                />
+              )}
+              
+              {currentSection === 'quiz' && (
+                <QuizSection 
+                  languages={selectedLanguages}
+                  onProgress={updateProgress}
+                />
+              )}
+              
+              {currentSection === 'admin' && userRole === 'admin' && (
+                <AdminDashboard />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
 
         <Toaster />
-      </div>
+      </motion.div>
     );
   }
 
