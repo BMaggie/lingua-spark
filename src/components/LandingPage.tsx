@@ -6,8 +6,12 @@ import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } fro
 import { motion } from 'framer-motion';
 import AuthModal from './AuthModal';
 import LanguageSelectionModal from './LanguageSelectionModal';
-import Hero3D from './Hero3D';
+import HeroImages from './HeroImages';
 import ScrollAnimation from './ScrollAnimations';
+import Floating3DBook from './Floating3DBook';
+import Floating3DGlobe from './Floating3DGlobe';
+import Floating3DBrain from './Floating3DBrain';
+import Footer from './Footer';
 
 interface LandingPageProps {
   onLanguageSelect: (languages: { base: string; target: string }) => void;
@@ -34,12 +38,14 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
     {
       icon: <BookOpen className="h-8 w-8 text-blue-500" />,
       title: "Interactive Lessons",
-      description: "Learn through engaging flashcards and immersive exercises designed for all skill levels"
+      description: "Learn through engaging flashcards and immersive exercises designed for all skill levels",
+      component: <Floating3DBook className="absolute top-2 right-2" />
     },
     {
       icon: <Brain className="h-8 w-8 text-purple-500" />,
       title: "AI-Powered Learning",
-      description: "Personalized learning paths that adapt to your progress and learning style"
+      description: "Personalized learning paths that adapt to your progress and learning style",
+      component: <Floating3DBrain className="absolute top-2 right-2" />
     },
     {
       icon: <Trophy className="h-8 w-8 text-yellow-500" />,
@@ -49,7 +55,8 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
     {
       icon: <Globe className="h-8 w-8 text-green-500" />,
       title: "50+ Languages",
-      description: "Choose from a vast library of languages including popular and rare dialects"
+      description: "Choose from a vast library of languages including popular and rare dialects",
+      component: <Floating3DGlobe className="absolute top-2 right-2" />
     },
     {
       icon: <Users className="h-8 w-8 text-indigo-500" />,
@@ -87,7 +94,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Hero Section with 3D */}
+      {/* Hero Section with Images */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
         <div className="relative container mx-auto px-4 py-16">
@@ -135,7 +142,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
             </div>
           </motion.nav>
 
-          {/* Hero Content with 3D Background */}
+          {/* Hero Content with Images */}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div 
               className="text-left max-w-2xl"
@@ -203,20 +210,20 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               </motion.p>
             </motion.div>
 
-            {/* 3D Hero Element */}
+            {/* Hero Images */}
             <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="relative"
             >
-              <Hero3D />
+              <HeroImages />
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Features Section with Scroll Animations */}
+      {/* Features Section with 3D Elements */}
       <div className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <ScrollAnimation direction="up" className="text-center mb-16">
@@ -237,7 +244,8 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <Card className="text-center hover:shadow-xl transition-all duration-300 hover-lift border-0 shadow-lg group">
+                <Card className="text-center hover:shadow-xl transition-all duration-300 hover-lift border-0 shadow-lg group relative overflow-visible">
+                  {feature.component}
                   <CardHeader>
                     <motion.div 
                       className="flex justify-center mb-4"
@@ -262,10 +270,14 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
         </div>
       </div>
 
-      {/* CTA Section */}
+      {/* CTA Section with 3D Brain */}
       <ScrollAnimation direction="up">
         <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
+          {/* Floating 3D Brain */}
+          <div className="absolute top-10 right-10 opacity-20">
+            <Floating3DBrain className="w-48 h-48" />
+          </div>
           <div className="container mx-auto px-4 text-center relative z-10">
             <motion.h3 
               className="text-4xl font-bold text-white mb-6"
@@ -308,6 +320,9 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
           </div>
         </div>
       </ScrollAnimation>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Auth Modal */}
       <AuthModal
