@@ -1,21 +1,22 @@
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
-import { motion } from 'framer-motion';
-import { Suspense } from 'react';
+import { OrbitControls, Float } from '@react-three/drei';
+import { Suspense, useRef } from 'react';
+import { Mesh } from 'three';
 
 const AnimatedSphere = () => {
+  const meshRef = useRef<Mesh>(null);
+  
   return (
     <Float speed={1} rotationIntensity={1} floatIntensity={2}>
-      <Sphere args={[1, 100, 200]} scale={2.5}>
-        <MeshDistortMaterial
+      <mesh ref={meshRef} scale={2.5}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshStandardMaterial
           color="#667eea"
-          attach="material"
-          distort={0.3}
-          speed={1.5}
           roughness={0.2}
+          metalness={0.8}
         />
-      </Sphere>
+      </mesh>
     </Float>
   );
 };
@@ -34,7 +35,11 @@ const BookFloat = ({ position }: { position: [number, number, number] }) => {
 const Hero3D = () => {
   return (
     <div className="relative w-full h-96 overflow-hidden">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 75 }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
+      >
         <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
           <directionalLight position={[10, 10, 5]} intensity={1} />
