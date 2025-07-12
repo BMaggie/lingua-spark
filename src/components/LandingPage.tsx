@@ -8,9 +8,7 @@ import AuthModal from './AuthModal';
 import LanguageSelectionModal from './LanguageSelectionModal';
 import HeroImages from './HeroImages';
 import ScrollAnimation from './ScrollAnimations';
-import Floating3DBook from './Floating3DBook';
-import Floating3DGlobe from './Floating3DGlobe';
-import Floating3DBrain from './Floating3DBrain';
+import AdminDashboard from './AdminDashboard';
 import Footer from './Footer';
 
 interface LandingPageProps {
@@ -26,6 +24,10 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const handleAuthSuccess = (userData: { name: string; role: 'admin' | 'user' }) => {
     setUser(userData);
     setShowAuthModal(false);
+    if (userData.role === 'admin') {
+      // Admin goes directly to dashboard, no language selection needed
+      return;
+    }
     setShowLanguageModal(true);
   };
 
@@ -37,36 +39,33 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const features = [
     {
       icon: <BookOpen className="h-8 w-8 text-blue-500" />,
-      title: "Interactive Lessons",
-      description: "Learn through engaging flashcards and immersive exercises designed for all skill levels",
-      component: <Floating3DBook className="absolute top-2 right-2" />
+      title: "Learn Fast",
+      description: "Master new languages 3x faster with our proven method. See results in just 15 minutes a day!"
     },
     {
       icon: <Brain className="h-8 w-8 text-purple-500" />,
-      title: "AI-Powered Learning",
-      description: "Personalized learning paths that adapt to your progress and learning style",
-      component: <Floating3DBrain className="absolute top-2 right-2" />
+      title: "Make it Fun",
+      description: "Gamified lessons that feel like playing games. Learning has never been this enjoyable!"
     },
     {
       icon: <Trophy className="h-8 w-8 text-yellow-500" />,
-      title: "Gamification",
-      description: "Earn points, unlock achievements, and compete with friends while you learn"
+      title: "Stay Motivated",
+      description: "Streaks, achievements, and rewards keep you coming back for more learning fun"
     },
     {
       icon: <Globe className="h-8 w-8 text-green-500" />,
       title: "50+ Languages",
-      description: "Choose from a vast library of languages including popular and rare dialects",
-      component: <Floating3DGlobe className="absolute top-2 right-2" />
+      description: "From Spanish to Japanese, find your perfect language match and start speaking today"
     },
     {
       icon: <Users className="h-8 w-8 text-indigo-500" />,
-      title: "Community",
-      description: "Practice with native speakers and join a global community of learners"
+      title: "Learn Together",
+      description: "Join millions of learners worldwide. Practice with native speakers and make friends"
     },
     {
       icon: <Star className="h-8 w-8 text-orange-500" />,
-      title: "Expert Content",
-      description: "Courses designed by linguistic experts and native speakers"
+      title: "Expert-Made",
+      description: "Content created by language experts and native speakers for authentic learning"
     }
   ];
 
@@ -91,6 +90,11 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
       }
     }
   };
+
+  // Show admin dashboard if user is admin
+  if (user?.role === 'admin') {
+    return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -156,7 +160,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                Master Any Language
+                Learn Languages Fast & Fun
               </motion.h2>
               <motion.p 
                 className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed"
@@ -164,8 +168,8 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Transform your language learning journey with AI-powered lessons, 
-                interactive exercises, and a global community of learners.
+                Speak a new language in just 30 days! Our fun, bite-sized lessons make learning 
+                addictive. Join millions who've discovered the fastest way to become fluent.
               </motion.p>
               <motion.div 
                 className="flex flex-col sm:flex-row gap-4 items-start"
@@ -228,10 +232,10 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
         <div className="container mx-auto px-4">
           <ScrollAnimation direction="up" className="text-center mb-16">
             <h3 className="text-4xl font-bold text-gray-800 mb-4">
-              Why Choose LinguaSpark?
+              Learning Made Simple
             </h3>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience the future of language learning with our cutting-edge platform
+              Discover why millions choose LinguaSpark for fast, fun, and effective language learning
             </p>
           </ScrollAnimation>
           
@@ -244,8 +248,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <Card className="text-center hover:shadow-xl transition-all duration-300 hover-lift border-0 shadow-lg group relative overflow-visible">
-                  {feature.component}
+                <Card className="text-center hover:shadow-xl transition-all duration-300 hover-lift border-0 shadow-lg group">
                   <CardHeader>
                     <motion.div 
                       className="flex justify-center mb-4"
@@ -270,14 +273,10 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
         </div>
       </div>
 
-      {/* CTA Section with 3D Brain */}
+      {/* CTA Section */}
       <ScrollAnimation direction="up">
         <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
-          {/* Floating 3D Brain */}
-          <div className="absolute top-10 right-10 opacity-20">
-            <Floating3DBrain className="w-48 h-48" />
-          </div>
           <div className="container mx-auto px-4 text-center relative z-10">
             <motion.h3 
               className="text-4xl font-bold text-white mb-6"
@@ -286,7 +285,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              Ready to Start Your Journey?
+              Start Speaking Today!
             </motion.h3>
             <motion.p 
               className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
@@ -295,7 +294,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Join millions of learners worldwide and discover how fun language learning can be.
+              Join millions who've already transformed their lives through language learning. It's fast, fun, and works!
             </motion.p>
             <motion.div
               initial={{ y: 20, opacity: 0 }}

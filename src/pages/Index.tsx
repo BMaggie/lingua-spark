@@ -291,7 +291,10 @@ const Index = () => {
               )}
               
               {currentSection === 'admin' && userRole === 'admin' && (
-                <AdminDashboard />
+                <AdminDashboard 
+                  user={{ name: user?.user_metadata?.full_name || user?.email || 'Admin', role: 'admin' }}
+                  onLogout={handleBackToLanding}
+                />
               )}
             </motion.div>
           </AnimatePresence>
