@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
 
 const AuthPage = () => {
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password'>('signup');
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
@@ -39,20 +39,10 @@ const AuthPage = () => {
           isOpen={true}
           onClose={() => {}}
           mode={authMode}
+          onModeChange={setAuthMode}
           onAuthSuccess={handleAuthSuccess}
         />
         
-        <div className="text-center">
-          <button
-            onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-            className="text-blue-600 hover:text-blue-800 transition-colors"
-          >
-            {authMode === 'login' 
-              ? "Don't have an account? Sign up" 
-              : "Already have an account? Log in"
-            }
-          </button>
-        </div>
       </div>
     </div>
   );
