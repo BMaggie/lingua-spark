@@ -44,23 +44,15 @@ const AuthModal = ({ isOpen, onClose, mode, onAuthSuccess }: AuthModalProps) => 
             variant: "destructive"
           });
         } else if (data.user) {
-          // Fetch user profile from profiles table
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
-
-          const user = {
-            name: profile?.full_name || profile?.username || data.user.email?.split('@')[0] || 'User',
-            role: (profile?.role as 'admin' | 'user') || 'user'
-          };
-          onAuthSuccess(user);
-          onClose();
-          toast({
-            title: "Welcome back!",
-            description: `Logged in successfully`,
-          });
+          // Wait a moment for the auth state to update in the AuthProvider
+          setTimeout(() => {
+            onAuthSuccess({ name: 'User', role: 'user' });
+            onClose();
+            toast({
+              title: "Welcome back!",
+              description: `Logged in successfully`,
+            });
+          }, 100);
         }
       } else {
         // Signup

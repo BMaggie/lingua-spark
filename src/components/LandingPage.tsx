@@ -1,34 +1,36 @@
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import AuthModal from './AuthModal';
 import LanguageSelectionModal from './LanguageSelectionModal';
 import HeroImages from './HeroImages';
 import ScrollAnimation from './ScrollAnimations';
-import AdminDashboard from './AdminDashboard';
 import Footer from './Footer';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LandingPageProps {
   onLanguageSelect: (languages: { base: string; target: string }) => void;
 }
 
 const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [user, setUser] = useState<{ name: string; role: 'admin' | 'user' } | null>(null);
 
-  const handleAuthSuccess = (userData: { name: string; role: 'admin' | 'user' }) => {
-    setUser(userData);
-    setShowAuthModal(false);
-    if (userData.role === 'admin') {
-      // Admin goes directly to dashboard, no language selection needed
-      return;
+  const handleGetStarted = () => {
+    if (isAuthenticated && user) {
+      // User is authenticated, show language selection
+      setShowLanguageModal(true);
+    } else {
+      // Redirect to auth page for signup
+      navigate('/auth');
     }
-    setShowLanguageModal(true);
+  };
+
+  const handleLogin = () => {
+    navigate('/auth');
   };
 
   const handleLanguageSelection = (languages: { base: string; target: string }) => {
@@ -91,11 +93,6 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
     }
   };
 
-  // Show admin dashboard if user is admin
-  if (user?.role === 'admin') {
-    return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Hero Section with Images */}
@@ -120,29 +117,36 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               </h1>
             </motion.div>
             <div className="flex space-x-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => {
-                    setAuthMode('login');
-                    setShowAuthModal(true);
-                  }}
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  Login
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  onClick={() => {
-                    setAuthMode('signup');
-                    setShowAuthModal(true);
-                  }}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
-                >
-                  Get Started
-                </Button>
-              </motion.div>
+              {!isAuthenticated ? (
+                <>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      variant="ghost" 
+                      onClick={handleLogin}
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      Login
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      onClick={handleGetStarted}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
+                    >
+                      Get Started
+                    </Button>
+                  </motion.div>
+                </>
+              ) : (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button 
+                    onClick={handleGetStarted}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
+                  >
+                    Continue Learning
+                  </Button>
+                </motion.div>
+              )}
             </div>
           </motion.nav>
 
@@ -180,29 +184,25 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button 
                     size="lg"
-                    onClick={() => {
-                      setAuthMode('signup');
-                      setShowAuthModal(true);
-                    }}
+                    onClick={handleGetStarted}
                     className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg shadow-xl hover-lift"
                   >
-                    Start Learning Today
+                    {isAuthenticated ? 'Continue Learning' : 'Start Learning Today'}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    onClick={() => {
-                      setAuthMode('login');
-                      setShowAuthModal(true);
-                    }}
-                    className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50 hover-lift"
-                  >
-                    Login to Continue
-                  </Button>
-                </motion.div>
+                {!isAuthenticated && (
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      onClick={handleLogin}
+                      className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50 hover-lift"
+                    >
+                      Login to Continue
+                    </Button>
+                  </motion.div>
+                )}
               </motion.div>
               <motion.p 
                 className="text-sm text-gray-500 mt-4"
@@ -306,10 +306,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
             >
               <Button 
                 size="lg"
-                onClick={() => {
-                  setAuthMode('signup');
-                  setShowAuthModal(true);
-                }}
+                onClick={handleGetStarted}
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-xl hover-lift"
               >
                 Get Started for Free
@@ -322,14 +319,6 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
 
       {/* Footer */}
       <Footer />
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        mode={authMode}
-        onAuthSuccess={handleAuthSuccess}
-      />
 
       {/* Language Selection Modal */}
       <LanguageSelectionModal
