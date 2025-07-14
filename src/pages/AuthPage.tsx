@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
 
 const AuthPage = () => {
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
