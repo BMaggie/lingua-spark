@@ -4,10 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import LanguageSelectionModal from './LanguageSelectionModal';
+import BaseLanguageModal from './BaseLanguageModal';
+import TargetLanguageModal from './TargetLanguageModal';
+import ProfileModal from './ProfileModal';
 import HeroImages from './HeroImages';
 import ScrollAnimation from './ScrollAnimations';
 import Footer from './Footer';
+import ProfileDropdown from './ProfileDropdown';
+import MobileNav from './MobileNav';
 import { useAuth } from '@/hooks/useAuth';
 
 interface LandingPageProps {
@@ -17,12 +21,15 @@ interface LandingPageProps {
 const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showBaseLanguageModal, setShowBaseLanguageModal] = useState(false);
+  const [showTargetLanguageModal, setShowTargetLanguageModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedBaseLanguage, setSelectedBaseLanguage] = useState<string>('');
 
   const handleGetStarted = () => {
     if (isAuthenticated && user) {
-      // User is authenticated, show language selection
-      setShowLanguageModal(true);
+      // User is authenticated, show base language selection first
+      setShowBaseLanguageModal(true);
     } else {
       // Redirect to auth page for signup
       navigate('/auth');
@@ -33,9 +40,15 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
     navigate('/auth');
   };
 
-  const handleLanguageSelection = (languages: { base: string; target: string }) => {
-    setShowLanguageModal(false);
-    onLanguageSelect(languages);
+  const handleBaseLanguageSelect = (language: string) => {
+    setSelectedBaseLanguage(language);
+    setShowBaseLanguageModal(false);
+    setShowTargetLanguageModal(true);
+  };
+
+  const handleTargetLanguageSelect = (language: string) => {
+    setShowTargetLanguageModal(false);
+    onLanguageSelect({ base: selectedBaseLanguage, target: language });
   };
 
   const features = [
@@ -116,36 +129,37 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
                 LinguaSpark
               </h1>
             </motion.div>
-            <div className="flex space-x-4">
-              {!isAuthenticated ? (
+            <div className="flex items-center space-x-4">
+              {isAuthenticated && user ? (
                 <>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      variant="ghost" 
-                      onClick={handleLogin}
-                      className="text-gray-600 hover:text-blue-600 transition-colors"
-                    >
-                      Login
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      onClick={handleGetStarted}
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
-                    >
-                      Get Started
-                    </Button>
-                  </motion.div>
+                  <div className="hidden md:flex items-center space-x-4">
+                    <ProfileDropdown onProfileClick={() => setShowProfileModal(true)} />
+                  </div>
+                  <MobileNav />
                 </>
               ) : (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button 
-                    onClick={handleGetStarted}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
-                  >
-                    Continue Learning
-                  </Button>
-                </motion.div>
+                <>
+                  <div className="hidden md:flex items-center space-x-4">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button 
+                        variant="ghost" 
+                        onClick={handleLogin}
+                        className="text-gray-600 hover:text-blue-600 transition-colors"
+                      >
+                        Login
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button 
+                        onClick={handleGetStarted}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover-glow"
+                      >
+                        Get Started
+                      </Button>
+                    </motion.div>
+                  </div>
+                  <MobileNav />
+                </>
               )}
             </div>
           </motion.nav>
@@ -321,11 +335,22 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
       <Footer />
 
       {/* Language Selection Modal */}
-      <LanguageSelectionModal
-        isOpen={showLanguageModal}
-        onClose={() => setShowLanguageModal(false)}
-        onLanguageSelect={handleLanguageSelection}
-        userRole={user?.role || 'user'}
+      <BaseLanguageModal
+        isOpen={showBaseLanguageModal}
+        onClose={() => setShowBaseLanguageModal(false)}
+        onLanguageSelect={handleBaseLanguageSelect}
+      />
+
+      <TargetLanguageModal
+        isOpen={showTargetLanguageModal}
+        onClose={() => setShowTargetLanguageModal(false)}
+        onLanguageSelect={handleTargetLanguageSelect}
+        baseLanguage={selectedBaseLanguage}
+      />
+
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
       />
     </div>
   );

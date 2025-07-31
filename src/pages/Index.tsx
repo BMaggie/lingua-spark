@@ -7,7 +7,7 @@ import LandingPage from '@/components/LandingPage';
 import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
-import ProfileDropdown from '@/components/ProfileDropdown';
+import { LogOut } from 'lucide-react';
 import RoleGuard from '@/components/RoleGuard';
 import AnimatedLoader from '@/components/AnimatedLoader';
 import { BookOpen, Star, Settings } from 'lucide-react';
@@ -191,11 +191,15 @@ const Index = () => {
                   <span className="font-semibold">{userProgress.points}</span>
                 </motion.div>
                 <div className="text-sm text-gray-600">Level {userProgress.level}</div>
-                <ProfileDropdown 
-                  userProgress={userProgress}
-                  languages={selectedLanguages}
-                  onBackToLanding={handleBackToLanding}
-                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBackToLanding}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Back to Home
+                </Button>
               </div>
             </div>
           </div>
