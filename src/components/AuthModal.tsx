@@ -162,7 +162,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">

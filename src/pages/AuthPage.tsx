@@ -37,7 +37,7 @@ const AuthPage = () => {
         
         <AuthModal
           isOpen={true}
-          onClose={() => {}}
+          onClose={() => navigate('/')}
           mode={authMode}
           onModeChange={setAuthMode}
           onAuthSuccess={handleAuthSuccess}
