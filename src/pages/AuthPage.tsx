@@ -5,11 +5,12 @@ import AuthModal from '@/components/AuthModal';
 
 const AuthPage = () => {
   const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password'>('signup');
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated && user) {
+    // Only navigate if user is authenticated AND not loading
+    if (isAuthenticated && user && !isLoading) {
       // Redirect based on role
       if (user.role === 'admin') {
         navigate('/admin');
@@ -17,10 +18,16 @@ const AuthPage = () => {
         navigate('/');
       }
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, isLoading]);
 
   const handleAuthSuccess = () => {
     // AuthProvider will handle the redirect via useEffect above
+    // Adding a small delay to ensure user object is fully loaded
+    setTimeout(() => {
+      if (isAuthenticated && user) {
+        navigate(user.role === 'admin' ? '/admin' : '/');
+      }
+    }, 100);
   };
 
   return (
