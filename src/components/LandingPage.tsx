@@ -205,42 +205,53 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
             <motion.div 
-              className="text-left"
+              className="text-left relative z-10"
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-6"
-              >
-                <Star className="h-4 w-4 mr-2" />
-                Trusted by 2M+ learners worldwide
-              </motion.div>
+              {/* Content Background Overlay */}
+              <div className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-3xl -m-8 p-8 shadow-2xl"></div>
               
-              <motion.h1 
-                className="text-5xl lg:text-7xl font-bold mb-6 leading-tight"
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              >
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
-                  Master Any Language
-                </span>
-                <br />
-                <span className="text-gray-900">In Record Time</span>
-              </motion.h1>
-              
-              <motion.p 
-                className="text-xl lg:text-2xl text-gray-600 mb-8 leading-relaxed max-w-2xl"
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              >
-                Join millions learning with our AI-powered platform. Speak confidently in just 30 days with personalized lessons that adapt to your learning style.
-              </motion.p>
+              <div className="relative z-10">
+                <motion.div
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="inline-flex items-center px-4 py-2 bg-white/90 backdrop-blur-sm text-blue-800 rounded-full text-sm font-medium mb-6 shadow-lg"
+                >
+                  <Star className="h-4 w-4 mr-2" />
+                  Trusted by 2M+ learners worldwide
+                </motion.div>
+                
+                <motion.h1 
+                  className="text-5xl lg:text-7xl font-bold mb-6 leading-tight"
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  style={{ 
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.5)' 
+                  }}
+                >
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-lg">
+                    Master Any Language
+                  </span>
+                  <br />
+                  <span className="text-white drop-shadow-lg">In Record Time</span>
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-xl lg:text-2xl text-white mb-8 leading-relaxed max-w-2xl font-medium"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  style={{ 
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.5)' 
+                  }}
+                >
+                  Join millions learning with our AI-powered platform. Speak confidently in just 30 days with personalized lessons that adapt to your learning style.
+                </motion.p>
+              </div>
               
               <motion.div 
                 className="flex flex-col sm:flex-row gap-4 mb-8"
