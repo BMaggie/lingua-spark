@@ -12,6 +12,7 @@ import ScrollAnimation from './ScrollAnimations';
 import Footer from './Footer';
 import ProfileDropdown from './ProfileDropdown';
 import MobileNav from './MobileNav';
+import HeroBackground from './HeroBackground';
 import { useAuth } from '@/hooks/useAuth';
 
 interface LandingPageProps {
@@ -199,7 +200,8 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 lg:py-32">
-        <div className="container mx-auto px-4">
+        <HeroBackground />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
             <motion.div 
