@@ -9,74 +9,149 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Base colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 224 16% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 16% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 16% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Language Learning App Color Palette */
+    --primary: 221 83% 53%; /* Vibrant blue */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 221 83% 63%;
+    --primary-dark: 221 83% 43%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 142 76% 36%; /* Fresh green for success */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 271 81% 56%; /* Purple for creativity */
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --warning: 32 95% 44%; /* Orange for alerts */
+    --warning-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --success: 142 76% 36%; /* Green for achievements */
+    --success-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --info: 199 89% 48%; /* Cyan for information */
+    --info-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.75rem;
+
+    /* Language Learning Specific Colors */
+    --learning-beginner: 142 76% 36%; /* Green */
+    --learning-intermediate: 32 95% 44%; /* Orange */
+    --learning-advanced: 271 81% 56%; /* Purple */
+    --learning-expert: 221 83% 53%; /* Blue */
+
+    /* Gamification Colors */
+    --xp-color: 52 98% 47%; /* Golden yellow */
+    --streak-color: 11 80% 52%; /* Fire red */
+    --badge-bronze: 28 100% 52%;
+    --badge-silver: 0 0% 75%;
+    --badge-gold: 45 93% 58%;
+
+    /* Gradient Colors */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(271 81% 56%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(174 62% 47%));
+    --gradient-warm: linear-gradient(135deg, hsl(32 95% 44%), hsl(11 80% 52%));
+    --gradient-cool: linear-gradient(135deg, hsl(199 89% 48%), hsl(221 83% 53%));
+
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-foreground: 224 16% 12%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 224 16% 12%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark theme base colors */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+
+    /* Dark theme language learning colors */
+    --primary: 221 83% 63%; /* Brighter blue for dark mode */
+    --primary-foreground: 224 71% 4%;
+    --primary-light: 221 83% 73%;
+    --primary-dark: 221 83% 53%;
+
+    --secondary: 142 76% 46%; /* Brighter green */
+    --secondary-foreground: 224 71% 4%;
+
+    --accent: 271 81% 66%; /* Brighter purple */
+    --accent-foreground: 224 71% 4%;
+
+    --warning: 32 95% 54%; /* Brighter orange */
+    --warning-foreground: 224 71% 4%;
+
+    --success: 142 76% 46%;
+    --success-foreground: 224 71% 4%;
+
+    --info: 199 89% 58%;
+    --info-foreground: 224 71% 4%;
+
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 10% 65%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 213 31% 91%;
+
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 221 83% 63%;
+
+    /* Dark theme learning colors */
+    --learning-beginner: 142 76% 46%;
+    --learning-intermediate: 32 95% 54%;
+    --learning-advanced: 271 81% 66%;
+    --learning-expert: 221 83% 63%;
+
+    /* Dark theme gamification */
+    --xp-color: 52 98% 57%;
+    --streak-color: 11 80% 62%;
+    --badge-bronze: 28 100% 62%;
+    --badge-silver: 0 0% 85%;
+    --badge-gold: 45 93% 68%;
+
+    /* Dark theme gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 63%), hsl(271 81% 66%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 46%), hsl(174 62% 57%));
+    --gradient-warm: linear-gradient(135deg, hsl(32 95% 54%), hsl(11 80% 62%));
+    --gradient-cool: linear-gradient(135deg, hsl(199 89% 58%), hsl(221 83% 63%));
+
+    /* Dark sidebar */
+    --sidebar-background: 224 71% 4%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 221 83% 63%;
+    --sidebar-primary-foreground: 224 71% 4%;
+    --sidebar-accent: 215 28% 17%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 215 28% 17%;
+    --sidebar-ring: 221 83% 63%;
   }
 }
 
