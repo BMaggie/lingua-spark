@@ -41,7 +41,9 @@ export function useUserProgress() {
         schema: 'public',
         table: 'profiles'
       }, async payload => {
-        if (payload.new?.user_id === userProfile?.user_id) {
+        // Get current user to check if this update is for the current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && payload.new?.user_id === user.id) {
           setUserProfile(payload.new as Profile);
         }
       })
@@ -62,8 +64,8 @@ export function useUserProgress() {
       const updates = {
         points: (userProfile.points || 0) + points,
         stages_completed: {
-          vocabulary: completedStages?.vocabulary || userProfile.stages_completed.vocabulary,
-          quiz: completedStages?.quiz || userProfile.stages_completed.quiz
+          vocabulary: completedStages?.vocabulary || userProfile.stages_completed?.vocabulary || [],
+          quiz: completedStages?.quiz || userProfile.stages_completed?.quiz || []
         }
       };
 

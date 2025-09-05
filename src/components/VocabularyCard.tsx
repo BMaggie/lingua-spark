@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Headphones, Check, Mic, Star, Lock } from 'lucide-react';
+import { Headphones, Check } from 'lucide-react';
 import StagesSelector from './StagesSelector';
 import { supabase } from "@/integrations/supabase/client";
 import type { VocabularyStage } from "@/integrations/supabase/types";
@@ -14,7 +13,7 @@ interface VocabularyCardProps {
   languages: { base: string; target: string };
 }
 
-export default function VocabularyCard({ languages }: VocabularyCardProps) {
+function VocabularyCard({ languages }: VocabularyCardProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [knownWords, setKnownWords] = useState<number[]>([]);
@@ -34,16 +33,38 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
           .select('*')
           .order('level', { ascending: true });
 
-        if (error) throw error;
-        setStages(vocabStages || []);
-        if (vocabStages && vocabStages.length > 0) {
-          setCurrentStage(vocabStages[0]);
+        if (error) {
+          console.error('Database error:', error);
+          // If table doesn't exist, create some sample data
+          if (error.message.includes('relation "vocabulary_stages" does not exist')) {
+            console.log('Creating sample vocabulary stages...');
+            const sampleStages: VocabularyStage[] = [
+              {
+                id: 1,
+                level: 1,
+                words: [
+                  { word: 'Hello', translation: 'Hola', difficulty: 'easy' as const },
+                  { word: 'Goodbye', translation: 'Adiós', difficulty: 'easy' as const },
+                  { word: 'Thank you', translation: 'Gracias', difficulty: 'easy' as const }
+                ]
+              }
+            ];
+            setStages(sampleStages);
+            setCurrentStage(sampleStages[0]);
+          } else {
+            throw error;
+          }
+        } else {
+          setStages(vocabStages || []);
+          if (vocabStages && vocabStages.length > 0) {
+            setCurrentStage(vocabStages[0]);
+          }
         }
       } catch (error) {
         console.error('Error fetching vocabulary stages:', error);
         toast({
           title: "Error",
-          description: "Failed to load vocabulary stages",
+          description: "Failed to load vocabulary stages. Please try again later.",
           variant: "destructive"
         });
       } finally {
@@ -52,7 +73,7 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
     };
 
     fetchStages();
-  }, []);
+  }, [toast]);
 
   const nextCard = () => {
     if (!currentStage) return;
@@ -120,7 +141,7 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
       try {
         // Update user progress
         await updateProgress(points, {
-          vocabulary: [...userProfile.stages_completed.vocabulary, currentStage.level]
+          vocabulary: [...(userProfile.stages_completed?.vocabulary || []), currentStage.level]
         });
         
         toast({
@@ -131,7 +152,7 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
         console.error('Error updating progress:', error);
         toast({
           title: "Error",
-          description: "Failed to update progress",
+          description: `Failed to update progress: ${error instanceof Error ? error.message : 'Unknown error'}`,
           variant: "destructive"
         });
       }
@@ -162,7 +183,7 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
           // Move to next stage if available
           const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
           if (nextStageIndex < stages.length) {
-            handleStageSelect(stages[nextStageIndex]);
+            handleStageSelect(stages[nextStageIndex].level);
           }
         } catch (error) {
           console.error('Error updating completed stages:', error);
@@ -174,9 +195,10 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
         }
       } else {
         toast({
-        title: "Great job! 🎉",
-        description: "You earned 10 points for learning a new word!",
-      });
+          title: "Great job! 🎉",
+          description: `You earned ${points} points for learning a new word!`,
+        });
+      }
     }
     nextCard();
   };
@@ -187,11 +209,6 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
       description: "Review this word and try again later.",
     });
     nextCard();
-  };
-
-  const nextCard = () => {
-    setIsFlipped(false);
-    setCurrentCardIndex((prev) => (prev + 1) % vocabularyData.length);
   };
 
   const resetCards = () => {
@@ -223,38 +240,41 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
   }
 
   return (
-    <Card className="flex flex-col gap-6 p-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Vocabulary Practice</h2>
-        <p className="text-gray-600">
-          Stage {currentStage.level} • Card {currentCardIndex + 1} of {currentStage.words.length} • 
-          Known: {knownWords.length} words
-        </p>
-      </div>
+    <div className="space-y-6">
+      <Card className="p-6">
+        <CardContent className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">Vocabulary Practice</h2>
+            <p className="text-gray-600">
+              Stage {currentStage.level} • Card {currentCardIndex + 1} of {currentStage.words.length} • 
+              Known: {knownWords.length} words
+            </p>
+          </div>
 
-      <StagesSelector
-        stages={stages.map(stage => ({
-          id: stage.level,
-          level: stage.level,
-          title: `Stage ${stage.level}`,
-          description: `${stage.words.length} words`,
-          disabled: !completedStages.includes(stage.level - 1) && stage.level !== 1
-        }))}
-        currentStage={currentStage.level}
-        onStageSelect={handleStageSelect}
-      />
-      
-      {currentStage && (
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentCardIndex + 1) / currentStage.words.length) * 100}%` }}
+          <StagesSelector
+            stages={stages.map(stage => ({
+              id: stage.id,
+              level: stage.level,
+              difficulty: 'medium', // Default difficulty since it's not in the stage data
+              wordsCount: stage.words.length
+            }))}
+            currentStageId={currentStage.id}
+            completedStages={completedStages}
+            progress={stageProgress}
+            onStageSelect={handleStageSelect}
           />
-        </div>
-      )}
+          
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentCardIndex + 1) / currentStage.words.length) * 100}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       <Card 
-        className={`h-80 w-full cursor-pointer transition-all duration-700 transform-gpu perspective-1000 ${
+        className={`h-80 cursor-pointer transition-all duration-700 transform-gpu ${
           isFlipped ? 'rotate-y-180' : ''
         } hover:shadow-xl`}
         onClick={handleCardFlip}
@@ -275,48 +295,43 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
             </div>
             <Button
               variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  playAudio(currentCard.word, languages.base);
-                }}
-                className="mt-4"
-              >
-                <Headphones className="h-4 w-4 mr-2" />
-                Listen
-              </Button>
-            </div>
-          </CardContent>
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                playAudio(currentCard.word, languages.base);
+              }}
+            >
+              <Headphones className="h-4 w-4 mr-2" />
+              Listen
+            </Button>
+          </div>
+        </CardContent>
 
-          {/* Back of card */}
-          <CardContent className={`absolute inset-0 backface-hidden rotate-y-180 flex flex-col justify-center items-center p-8 bg-gradient-to-br from-blue-50 to-purple-50 ${
-            !isFlipped ? 'rotate-y-180' : ''
-          }`}>
-            <div className="text-center space-y-4">
-              <div className="text-sm text-gray-500 uppercase tracking-wide">
-                Translation in {languages.target}
-              </div>
-              <div className="text-4xl font-bold text-blue-600">
-                {currentCard.translation}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  playAudio(currentCard.translation, languages.target);
-                }}
-                className="mt-4"
-              >
-                <Headphones className="h-4 w-4 mr-2" />
-                Listen
-              </Button>
+        {/* Back of card */}
+        <CardContent className={`absolute inset-0 backface-hidden rotate-y-180 flex flex-col justify-center items-center p-8 bg-gradient-to-br from-blue-50 to-purple-50`}>
+          <div className="text-center space-y-4">
+            <div className="text-sm text-gray-500 uppercase tracking-wide">
+              Translation in {languages.target}
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="text-4xl font-bold text-blue-600">
+              {currentCard.translation}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                playAudio(currentCard.translation, languages.target);
+              }}
+            >
+              <Headphones className="h-4 w-4 mr-2" />
+              Listen
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="text-center text-sm text-gray-500 mb-4">
+      <div className="text-center text-sm text-gray-500">
         Click the card to flip it and see the translation
       </div>
 
@@ -354,6 +369,6 @@ export default function VocabularyCard({ languages }: VocabularyCardProps) {
       )}
     </div>
   );
-};
+}
 
 export default VocabularyCard;

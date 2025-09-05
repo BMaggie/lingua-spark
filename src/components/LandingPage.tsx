@@ -1,12 +1,13 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } from 'lucide-react';
 import AuthModal from './AuthModal';
-import LanguageSelectionModal from './LanguageSelectionModal';
 import BaseLanguageModal from './BaseLanguageModal';
 import TargetLanguageModal from './TargetLanguageModal';
+import { supabase } from "@/integrations/supabase/client";
+import { useUserProgress } from '@/hooks/useUserProgress';
 
 interface LandingPageProps {
   onLanguageSelect: (languages: { base: string; target: string }) => void;
@@ -20,6 +21,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const [user, setUser] = useState<{ name: string; role: 'admin' | 'user' } | null>(null);
   const [baseLanguage, setBaseLanguage] = useState<string>("");
   const [targetLanguage, setTargetLanguage] = useState<string>("");
+  const { userProfile } = useUserProgress();
 
   // Language data (should match Base/Target modals)
   const languages = [
@@ -49,7 +51,18 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const handleAuthSuccess = (userData: { name: string; role: 'admin' | 'user' }) => {
     setUser(userData);
     setShowAuthModal(false);
-    setShowBaseModal(true);
+    
+    // Check if user already has language preferences
+    if (userProfile?.learning_languages?.base && userProfile?.learning_languages?.target) {
+      // Returning user with existing preferences - skip language selection
+      onLanguageSelect({
+        base: userProfile.learning_languages.base,
+        target: userProfile.learning_languages.target
+      });
+    } else {
+      // New user or user without language preferences - show language selection
+      setShowBaseModal(true);
+    }
   };
 
   const handleBaseSelect = (base: string) => {
@@ -64,8 +77,8 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
     const baseLang = availableLanguages.find(l => l.code === baseLanguage);
     const targetLang = availableLanguages.find(l => l.code === target);
     onLanguageSelect({
-      base: baseLang?.name || baseLanguage,
-      target: targetLang?.name || target,
+      base: baseLang?.name || baseLanguage,  // Base language (what user speaks)
+      target: targetLang?.name || target,    // Target language (what user wants to learn)
     });
   };
 

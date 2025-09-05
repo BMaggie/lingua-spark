@@ -32,16 +32,45 @@ const QuizSection = ({ languages }: QuizSectionProps) => {
           .select('*')
           .order('level', { ascending: true });
 
-        if (error) throw error;
-        setStages(quizStages || []);
-        if (quizStages && quizStages.length > 0) {
-          setCurrentStage(quizStages[0]);
+        if (error) {
+          console.error('Database error:', error);
+          // If table doesn't exist, create some sample data
+          if (error.message.includes('relation "quiz_stages" does not exist')) {
+            console.log('Creating sample quiz stages...');
+            const sampleStages = [
+              {
+                id: 1,
+                level: 1,
+                name: 'Basic Quiz',
+                description: 'Test your basic knowledge',
+                questions: [
+                  {
+                    question: 'What does "Hola" mean?',
+                    options: ['Hello', 'Goodbye', 'Thank you', 'Please'],
+                    correct_answer: 'Hello',
+                    points: 10,
+                    difficulty: 'easy',
+                    category: 'greetings'
+                  }
+                ]
+              }
+            ];
+            setStages(sampleStages);
+            setCurrentStage(sampleStages[0]);
+          } else {
+            throw error;
+          }
+        } else {
+          setStages(quizStages || []);
+          if (quizStages && quizStages.length > 0) {
+            setCurrentStage(quizStages[0]);
+          }
         }
       } catch (error) {
         console.error('Error fetching quiz stages:', error);
         toast({
           title: "Error",
-          description: "Failed to load quiz stages",
+          description: "Failed to load quiz stages. Please try again later.",
           variant: "destructive"
         });
       } finally {
@@ -118,8 +147,8 @@ const QuizSection = ({ languages }: QuizSectionProps) => {
       try {
         await updateProgress(currentQuestion.points, {
           quiz: newScore === currentStage.questions.length
-            ? [...userProfile.stages_completed.quiz, currentStage.level]
-            : userProfile.stages_completed.quiz
+            ? [...(userProfile.stages_completed?.quiz || []), currentStage.level]
+            : userProfile.stages_completed?.quiz || []
         });
 
         toast({

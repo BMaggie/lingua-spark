@@ -7,9 +7,11 @@ import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
 import ProfileDropdown from '@/components/ProfileDropdown';
+import Leaderboard from '@/components/Leaderboard';
 import { BookOpen, Star } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from '@supabase/supabase-js';
+import { useUserProgress } from '@/hooks/useUserProgress';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'app'>('landing');
@@ -28,8 +30,14 @@ const Index = () => {
         setUser(session?.user ?? null);
         
         if (session?.user && currentView === 'landing') {
-          // User is authenticated, but we still need language selection
-          // The language selection modal will be handled by LandingPage component
+          // User is authenticated, check if they have language preferences
+          if (userProfile?.learning_languages?.base && userProfile?.learning_languages?.target) {
+            setSelectedLanguages({
+              base: userProfile.learning_languages.base,
+              target: userProfile.learning_languages.target
+            });
+            setCurrentView('app');
+          }
         } else if (!session?.user) {
           // User logged out, return to landing
           setCurrentView('landing');
@@ -45,7 +53,7 @@ const Index = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [currentView]);
+  }, [currentView, userProfile]);
 
   const handleLanguageSelect = (languages: { base: string; target: string }) => {
     setSelectedLanguages(languages);
@@ -98,11 +106,16 @@ const Index = () => {
                   <span className="font-semibold">{userProfile?.points || 0}</span>
                 </div>
                 <div className="text-sm text-gray-600">Level {userProfile?.current_level || 1}</div>
-                <ProfileDropdown 
-                  userProfile={userProfile}
-                  languages={selectedLanguages}
-                  onBackToLanding={handleBackToLanding}
-                />
+                        <ProfileDropdown 
+          userProgress={{
+            wordsLearned: userProfile?.stages_completed?.vocabulary?.length || 0,
+            streak: userProfile?.streak_days || 0,
+            points: userProfile?.points || 0,
+            level: userProfile?.current_level || 1
+          }}
+          languages={selectedLanguages}
+          onBackToLanding={handleBackToLanding}
+        />
               </div>
             </div>
           </div>
@@ -140,6 +153,12 @@ const Index = () => {
           {currentSection === 'dashboard' && (
             <>
               <ProgressDashboard 
+                progress={{
+                  wordsLearned: userProfile?.stages_completed?.vocabulary?.length || 0,
+                  streak: userProfile?.streak_days || 0,
+                  points: userProfile?.points || 0,
+                  level: userProfile?.current_level || 1
+                }}
                 languages={selectedLanguages}
                 onSectionChange={handleSectionChange}
               />

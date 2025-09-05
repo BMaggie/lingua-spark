@@ -33,16 +33,25 @@ const Leaderboard = ({ targetLanguage, currentUserId }: LeaderboardProps) => {
           .order('total_points', { ascending: false })
           .limit(10);
 
-        if (error) throw error;
-
-        const formattedData = data.map(entry => ({
-          ...entry,
-          user_name: entry.users?.full_name || 'Anonymous User'
-        }));
-
-        setLeaderboardData(formattedData);
+        if (error) {
+          console.error('Database error:', error);
+          // If table doesn't exist, show empty leaderboard
+          if (error.message.includes('relation "user_progress" does not exist')) {
+            console.log('User progress table does not exist yet');
+            setLeaderboardData([]);
+          } else {
+            throw error;
+          }
+        } else {
+          const formattedData = data.map(entry => ({
+            ...entry,
+            user_name: entry.users?.full_name || 'Anonymous User'
+          }));
+          setLeaderboardData(formattedData);
+        }
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
+        setLeaderboardData([]);
       } finally {
         setLoading(false);
       }
@@ -95,61 +104,7 @@ const Leaderboard = ({ targetLanguage, currentUserId }: LeaderboardProps) => {
               </div>
             </div>
           ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-export default Leaderboard;
-              <div className="flex-shrink-0 w-12 text-center font-bold">
-                {index < 3 ? (
-                  <Medal className={`h-6 w-6 mx-auto ${
-                    index === 0 ? 'text-yellow-500' : 
-                    index === 1 ? 'text-gray-500' : 
-                    'text-amber-500'
-                  }`} />
-                ) : (
-                  <span className="text-gray-500">#{index + 1}</span>
-                )}
-              </div>
-              <div className="ml-4 flex-grow">
-                <div className="flex items-center">
-                  <img 
-                    src={entry.avatar_url || '/placeholder.svg'} 
-                    alt={entry.username}
-                    className="h-8 w-8 rounded-full mr-3"
-                  />
-                  <div>
-                    <div className="font-semibold">{entry.username}</div>
-                    <div className="flex items-center gap-2">
-                      <div className="text-sm text-gray-500">
-                        Level {entry.level}
-                      </div>
-                      <div className="flex gap-1">
-                        {getAchievementBadges(entry).map((badge, i) => (
-                          <badge.icon
-                            key={i}
-                            className={`h-4 w-4 ${badge.color}`}
-                            title={badge.title}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-shrink-0 text-right">
-                <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {entry.points}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {entry.streak_days > 0 && `${entry.streak_days}d streak • `}points
-                </div>
-              </div>
-            </div>
-          ))}
-
+          
           {leaderboardData.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No learners found for this language yet.
