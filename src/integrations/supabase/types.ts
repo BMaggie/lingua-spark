@@ -6,11 +6,24 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface UserProgress {
+  id: string
+  user_id: string
+  target_language: string
+  total_points: number
+  vocabulary_stages_completed: number[]
+  quiz_stages_completed: number[]
+  streak_days: number
+  last_activity_date: string
+  achievements: string[]
+}
+
 export interface Profile {
   id: string
   user_id: string
   username: string
   avatar_url: string
+  full_name: string
   languages_spoken: string[]
   learning_languages: {
     base: string
@@ -18,10 +31,13 @@ export interface Profile {
   }
   points: number
   current_level: number
+  streak_days: number
+  last_activity_date: string
   stages_completed: {
     vocabulary: number[]
     quiz: number[]
   }
+  achievements: string[]
 }
 
 export interface VocabularyStage {
@@ -35,16 +51,24 @@ export interface VocabularyStage {
   }[]
 }
 
+export interface QuizQuestion {
+  question: string
+  options: string[]
+  correct_answer: string
+  points: number
+  difficulty: 'easy' | 'medium' | 'hard'
+  explanation?: string
+  category: string
+}
+
 export interface QuizStage {
   id: number
   level: number
-  questions: {
-    question: string
-    options: string[]
-    correct_answer: string
-    points: number
-    difficulty: 'easy' | 'medium' | 'hard'
-  }[]
+  name: string
+  description: string
+  questions: QuizQuestion[]
+  required_level?: number
+  unlock_points?: number
 }
 
 export interface LeaderboardEntry {
@@ -54,6 +78,7 @@ export interface LeaderboardEntry {
   points: number
   level: number
   learning_language: string
+  streak_days: number
 }
 
 export type Database = {

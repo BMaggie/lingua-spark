@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
-import type { LeaderboardEntry } from "@/integrations/supabase/types";
+import type { UserProgress } from "@/integrations/supabase/types";
+import { Badge } from './ui/badge';
 
 interface LeaderboardProps {
   targetLanguage: string;
+  currentUserId?: string;
 }
 
-const Leaderboard = ({ targetLanguage }: LeaderboardProps) => {
+interface LeaderboardEntry extends UserProgress {
+  user_name: string;
+}
+
+const Leaderboard = ({ targetLanguage, currentUserId }: LeaderboardProps) => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,13 +22,25 @@ const Leaderboard = ({ targetLanguage }: LeaderboardProps) => {
     const fetchLeaderboard = async () => {
       try {
         const { data, error } = await supabase
-          .rpc('get_leaderboard', { 
-            target_language: targetLanguage,
-            limit: 10 
-          });
+          .from('user_progress')
+          .select(`
+            *,
+            users:user_id (
+              full_name
+            )
+          `)
+          .eq('target_language', targetLanguage)
+          .order('total_points', { ascending: false })
+          .limit(10);
 
         if (error) throw error;
-        setLeaderboardData(data || []);
+
+        const formattedData = data.map(entry => ({
+          ...entry,
+          user_name: entry.users?.full_name || 'Anonymous User'
+        }));
+
+        setLeaderboardData(formattedData);
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
       } finally {
@@ -33,38 +51,57 @@ const Leaderboard = ({ targetLanguage }: LeaderboardProps) => {
     fetchLeaderboard();
   }, [targetLanguage]);
 
-  const getRankStyle = (index: number) => {
-    switch (index) {
-      case 0:
-        return 'bg-yellow-100 text-yellow-600 border-yellow-200';
-      case 1:
-        return 'bg-gray-100 text-gray-600 border-gray-200';
-      case 2:
-        return 'bg-amber-100 text-amber-600 border-amber-200';
-      default:
-        return 'bg-white text-gray-600 border-gray-100';
-    }
-  };
-
   if (loading) {
-    return <div className="flex justify-center p-8">Loading...</div>;
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold">
-          <Trophy className="h-6 w-6 text-yellow-500" />
-          Top Learners
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Trophy className="h-5 w-5" />
+          Top Learners - {targetLanguage}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {leaderboardData.map((entry, index) => (
-            <div 
+            <div
               key={entry.user_id}
-              className={`flex items-center p-4 rounded-lg border ${getRankStyle(index)}`}
+              className={`flex items-center justify-between p-4 rounded-lg ${
+                entry.user_id === currentUserId ? 'bg-primary/10' : 'bg-secondary/50'
+              }`}
             >
+              <div className="flex items-center gap-4">
+                <span className="text-lg font-semibold min-w-[24px]">#{index + 1}</span>
+                <span>{entry.user_name}</span>
+                {index < 3 && (
+                  <Badge variant={index === 0 ? "default" : "secondary"}>
+                    {index === 0 ? '🏆' : index === 1 ? '🥈' : '🥉'}
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm">Level {Math.floor(entry.total_points / 100) + 1}</span>
+                <span className="font-semibold">{entry.total_points} pts</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default Leaderboard;
               <div className="flex-shrink-0 w-12 text-center font-bold">
                 {index < 3 ? (
                   <Medal className={`h-6 w-6 mx-auto ${
@@ -85,15 +122,30 @@ const Leaderboard = ({ targetLanguage }: LeaderboardProps) => {
                   />
                   <div>
                     <div className="font-semibold">{entry.username}</div>
-                    <div className="text-sm text-gray-500">
-                      Level {entry.level}
+                    <div className="flex items-center gap-2">
+                      <div className="text-sm text-gray-500">
+                        Level {entry.level}
+                      </div>
+                      <div className="flex gap-1">
+                        {getAchievementBadges(entry).map((badge, i) => (
+                          <badge.icon
+                            key={i}
+                            className={`h-4 w-4 ${badge.color}`}
+                            title={badge.title}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="flex-shrink-0 text-right">
-                <div className="font-bold text-lg">{entry.points}</div>
-                <div className="text-xs text-gray-500">points</div>
+                <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {entry.points}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {entry.streak_days > 0 && `${entry.streak_days}d streak • `}points
+                </div>
               </div>
             </div>
           ))}

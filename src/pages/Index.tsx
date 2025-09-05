@@ -15,12 +15,7 @@ const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'app'>('landing');
   const [selectedLanguages, setSelectedLanguages] = useState({ base: '', target: '' });
   const [currentSection, setCurrentSection] = useState('dashboard');
-  const [userProgress, setUserProgress] = useState({
-    wordsLearned: 0,
-    streak: 0,
-    points: 0,
-    level: 1
-  });
+  const { userProfile, loading: userLoading } = useUserProgress();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
 
@@ -62,14 +57,7 @@ const Index = () => {
     setCurrentSection(section);
   };
 
-  const updateProgress = (points: number, wordsLearned: number = 0) => {
-    setUserProgress(prev => ({
-      ...prev,
-      points: prev.points + points,
-      wordsLearned: prev.wordsLearned + wordsLearned,
-      level: Math.floor((prev.points + points) / 100) + 1
-    }));
-  };
+
 
   const handleBackToLanding = async () => {
     await supabase.auth.signOut();
@@ -107,11 +95,11 @@ const Index = () => {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="font-semibold">{userProgress.points}</span>
+                  <span className="font-semibold">{userProfile?.points || 0}</span>
                 </div>
-                <div className="text-sm text-gray-600">Level {userProgress.level}</div>
+                <div className="text-sm text-gray-600">Level {userProfile?.current_level || 1}</div>
                 <ProfileDropdown 
-                  userProgress={userProgress}
+                  userProfile={userProfile}
                   languages={selectedLanguages}
                   onBackToLanding={handleBackToLanding}
                 />
@@ -150,24 +138,29 @@ const Index = () => {
 
         <main className="container mx-auto px-4 py-8">
           {currentSection === 'dashboard' && (
-            <ProgressDashboard 
-              progress={userProgress}
-              languages={selectedLanguages}
-              onSectionChange={handleSectionChange}
-            />
+            <>
+              <ProgressDashboard 
+                languages={selectedLanguages}
+                onSectionChange={handleSectionChange}
+              />
+              <div className="mt-8">
+                <Leaderboard 
+                  targetLanguage={selectedLanguages.target}
+                  currentUserId={user?.id}
+                />
+              </div>
+            </>
           )}
           
           {currentSection === 'vocabulary' && (
             <VocabularyCard 
               languages={selectedLanguages}
-              onProgress={updateProgress}
             />
           )}
           
           {currentSection === 'quiz' && (
             <QuizSection 
               languages={selectedLanguages}
-              onProgress={updateProgress}
             />
           )}
         </main>
