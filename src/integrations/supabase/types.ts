@@ -6,27 +6,91 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
-  // Allows to automatically instanciate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+export interface Profile {
+  id: string
+  user_id: string
+  username: string
+  avatar_url: string
+  languages_spoken: string[]
+  learning_languages: {
+    base: string
+    target: string
   }
+  points: number
+  current_level: number
+  stages_completed: {
+    vocabulary: number[]
+    quiz: number[]
+  }
+}
+
+export interface VocabularyStage {
+  id: number
+  level: number
+  words: {
+    word: string
+    translation: string
+    audio_url?: string
+    difficulty: 'easy' | 'medium' | 'hard'
+  }[]
+}
+
+export interface QuizStage {
+  id: number
+  level: number
+  questions: {
+    question: string
+    options: string[]
+    correct_answer: string
+    points: number
+    difficulty: 'easy' | 'medium' | 'hard'
+  }[]
+}
+
+export interface LeaderboardEntry {
+  user_id: string
+  username: string
+  avatar_url: string
+  points: number
+  level: number
+  learning_language: string
+}
+
+export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: Profile
+        Insert: Omit<Profile, 'id'>
+        Update: Partial<Profile>
+      }
+      vocabulary_stages: {
+        Row: VocabularyStage
+        Insert: VocabularyStage
+        Update: Partial<VocabularyStage>
+      }
+      quiz_stages: {
+        Row: QuizStage
+        Insert: QuizStage
+        Update: Partial<QuizStage>
+      }
+      leaderboard: {
+        Row: LeaderboardEntry
+        Insert: LeaderboardEntry
+        Update: Partial<LeaderboardEntry>
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_leaderboard: {
+        Args: { target_language: string; limit?: number }
+        Returns: LeaderboardEntry[]
+      }
     }
     Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
+      difficulty: 'easy' | 'medium' | 'hard'
     }
   }
 }

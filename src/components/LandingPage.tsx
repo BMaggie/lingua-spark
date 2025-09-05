@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } from 'lucide-react';
 import AuthModal from './AuthModal';
 import LanguageSelectionModal from './LanguageSelectionModal';
+import BaseLanguageModal from './BaseLanguageModal';
+import TargetLanguageModal from './TargetLanguageModal';
 
 interface LandingPageProps {
   onLanguageSelect: (languages: { base: string; target: string }) => void;
@@ -12,19 +14,59 @@ interface LandingPageProps {
 
 const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showBaseModal, setShowBaseModal] = useState(false);
+  const [showTargetModal, setShowTargetModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [user, setUser] = useState<{ name: string; role: 'admin' | 'user' } | null>(null);
+  const [baseLanguage, setBaseLanguage] = useState<string>("");
+  const [targetLanguage, setTargetLanguage] = useState<string>("");
+
+  // Language data (should match Base/Target modals)
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'fr', name: 'French', flag: '🇫🇷' },
+    { code: 'de', name: 'German', flag: '🇩🇪' },
+    { code: 'it', name: 'Italian', flag: '🇮🇹' },
+    { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+    { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+    { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+    { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+    { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+    { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
+    { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
+  ];
+  const adminLanguages = [
+    ...languages,
+    { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
+    { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
+    { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
+    { code: 'sw', name: 'Swahili', flag: '🇰🇪' },
+    { code: 'am', name: 'Amharic', flag: '🇪🇹' },
+  ];
+  const availableLanguages = user?.role === 'admin' ? adminLanguages : languages;
 
   const handleAuthSuccess = (userData: { name: string; role: 'admin' | 'user' }) => {
     setUser(userData);
     setShowAuthModal(false);
-    setShowLanguageModal(true);
+    setShowBaseModal(true);
   };
 
-  const handleLanguageSelection = (languages: { base: string; target: string }) => {
-    setShowLanguageModal(false);
-    onLanguageSelect(languages);
+  const handleBaseSelect = (base: string) => {
+    setBaseLanguage(base);
+    setShowBaseModal(false);
+    setTimeout(() => setShowTargetModal(true), 200); // Small delay for smoothness
+  };
+
+  const handleTargetSelect = (target: string) => {
+    setTargetLanguage(target);
+    setShowTargetModal(false);
+    const baseLang = availableLanguages.find(l => l.code === baseLanguage);
+    const targetLang = availableLanguages.find(l => l.code === target);
+    onLanguageSelect({
+      base: baseLang?.name || baseLanguage,
+      target: targetLang?.name || target,
+    });
   };
 
   const features = [
@@ -201,12 +243,20 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
         onAuthSuccess={handleAuthSuccess}
       />
 
-      {/* Language Selection Modal */}
-      <LanguageSelectionModal
-        isOpen={showLanguageModal}
-        onClose={() => setShowLanguageModal(false)}
-        onLanguageSelect={handleLanguageSelection}
-        userRole={user?.role || 'user'}
+      {/* Step 1: Base Language Modal */}
+      <BaseLanguageModal
+        isOpen={showBaseModal}
+        onClose={() => setShowBaseModal(false)}
+        onSelect={handleBaseSelect}
+        languages={availableLanguages}
+      />
+      {/* Step 2: Target Language Modal */}
+      <TargetLanguageModal
+        isOpen={showTargetModal}
+        onClose={() => setShowTargetModal(false)}
+        onSelect={handleTargetSelect}
+        languages={availableLanguages}
+        exclude={baseLanguage}
       />
     </div>
   );

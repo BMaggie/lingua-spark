@@ -1,10 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User, LogOut, Star, Target, Globe, X } from 'lucide-react';
+import { User, LogOut, Star, Target, Globe, X, Trophy } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import type { Profile } from "@/integrations/supabase/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,16 +30,34 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ userProgress, languages, onBackToLanding }: ProfileDropdownProps) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
-  // Mock user data - in a real app this would come from your auth/profile system
-  const userData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "", // Empty for fallback
-    joinDate: "March 2024",
-    goals: ["Complete 100 lessons", "Reach fluency level", "Practice daily"],
-    languagesSpoken: ["English", "Spanish"]
-  };
+  const [userData, setUserData] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        // Get the current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('No user found');
+
+        // Get the user's profile
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+        setUserData(profile);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleProfileClick = () => {
     setShowProfileModal(true);

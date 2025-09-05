@@ -1,37 +1,65 @@
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Headphones, Check, Mic } from 'lucide-react';
+import { Headphones, Check, Mic, Star, Lock } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import type { VocabularyStage } from "@/integrations/supabase/types";
+import { Badge } from "@/components/ui/badge";
 
 interface VocabularyCardProps {
   languages: { base: string; target: string };
   onProgress: (points: number, wordsLearned: number) => void;
+  completedStages: number[];
 }
 
-const VocabularyCard = ({ languages, onProgress }: VocabularyCardProps) => {
+const VocabularyCard = ({ languages, onProgress, completedStages }: VocabularyCardProps) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [knownWords, setKnownWords] = useState<number[]>([]);
+  const [currentStage, setCurrentStage] = useState<VocabularyStage | null>(null);
+  const [stages, setStages] = useState<VocabularyStage[]>([]);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Sample vocabulary data - in a real app, this would come from an API
-  const vocabularyData = [
-    { word: 'Hello', translation: 'Hola', example: 'Hello, how are you?', category: 'Greetings' },
-    { word: 'Thank you', translation: 'Gracias', example: 'Thank you for your help', category: 'Greetings' },
-    { word: 'Water', translation: 'Agua', example: 'I need some water', category: 'Basic Needs' },
-    { word: 'Food', translation: 'Comida', example: 'The food is delicious', category: 'Basic Needs' },
-    { word: 'House', translation: 'Casa', example: 'This is my house', category: 'Places' },
-    { word: 'Friend', translation: 'Amigo', example: 'He is my best friend', category: 'People' },
-    { word: 'Book', translation: 'Libro', example: 'I am reading a book', category: 'Objects' },
-    { word: 'Beautiful', translation: 'Hermoso', example: 'What a beautiful day!', category: 'Adjectives' },
-  ];
+  useEffect(() => {
+    const fetchStages = async () => {
+      try {
+        const { data: vocabStages, error } = await supabase
+          .from('vocabulary_stages')
+          .select('*')
+          .order('level', { ascending: true });
 
-  const currentCard = vocabularyData[currentCardIndex];
+        if (error) throw error;
+        setStages(vocabStages || []);
+        if (vocabStages && vocabStages.length > 0) {
+          setCurrentStage(vocabStages[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching vocabulary stages:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load vocabulary stages",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const playAudio = (text: string, lang: string) => {
-    if ('speechSynthesis' in window) {
+    fetchStages();
+  }, []);
+
+  const currentCard = currentStage?.words[currentCardIndex];
+
+  const playAudio = async (text: string, lang: string) => {
+    if (currentCard?.audio_url) {
+      // Play from audio URL if available
+      const audio = new Audio(currentCard.audio_url);
+      await audio.play();
+    } else if ('speechSynthesis' in window) {
+      // Fallback to speech synthesis
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang === 'Spanish' ? 'es-ES' : 'en-US';
       utterance.rate = 0.8;
@@ -43,11 +71,73 @@ const VocabularyCard = ({ languages, onProgress }: VocabularyCardProps) => {
     setIsFlipped(!isFlipped);
   };
 
-  const handleKnowWord = () => {
-    if (!knownWords.includes(currentCardIndex)) {
-      setKnownWords([...knownWords, currentCardIndex]);
-      onProgress(10, 1);
+  const handleStageSelect = (stage: VocabularyStage) => {
+    const isAvailable = stage.level === 1 || completedStages.includes(stage.level - 1);
+    if (!isAvailable) {
       toast({
+        title: "Stage Locked",
+        description: "Complete the previous stage first!",
+        variant: "destructive"
+      });
+      return;
+    }
+    setCurrentStage(stage);
+    setCurrentCardIndex(0);
+    setKnownWords([]);
+    setIsFlipped(false);
+  };
+
+  const handleKnowWord = async () => {
+    if (!currentStage || !currentCard) return;
+    
+    if (!knownWords.includes(currentCardIndex)) {
+      const newKnownWords = [...knownWords, currentCardIndex];
+      setKnownWords(newKnownWords);
+      
+      // Calculate points based on difficulty
+      const points = currentCard.difficulty === 'hard' ? 30 : 
+                    currentCard.difficulty === 'medium' ? 20 : 10;
+      
+      onProgress(points, 1);
+
+      // Check if stage is completed
+      if (newKnownWords.length === currentStage.words.length) {
+        // Update user's completed stages
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) throw new Error('No user found');
+
+          const { error } = await supabase
+            .from('profiles')
+            .update({
+              stages_completed: {
+                vocabulary: [...completedStages, currentStage.level]
+              }
+            })
+            .eq('user_id', user.id);
+
+          if (error) throw error;
+
+          toast({
+            title: "Stage Completed!",
+            description: `Congratulations! You've mastered all words in stage ${currentStage.level}!`,
+          });
+
+          // Move to next stage if available
+          const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
+          if (nextStageIndex < stages.length) {
+            handleStageSelect(stages[nextStageIndex]);
+          }
+        } catch (error) {
+          console.error('Error updating completed stages:', error);
+          toast({
+            title: "Error",
+            description: "Failed to update progress",
+            variant: "destructive"
+          });
+        }
+      } else {
+        toast({
         title: "Great job! 🎉",
         description: "You earned 10 points for learning a new word!",
       });
