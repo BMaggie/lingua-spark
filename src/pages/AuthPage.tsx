@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
 
 const AuthPage = () => {
-  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password'>('signup');
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode') as 'login' | 'signup' | 'forgot-password';
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password'>(mode || 'signup');
   const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
 

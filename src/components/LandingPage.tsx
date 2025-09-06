@@ -32,12 +32,12 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
       setShowBaseLanguageModal(true);
     } else {
       // Redirect to auth page for signup
-      navigate('/auth');
+      navigate('/auth?mode=signup');
     }
   };
 
   const handleLogin = () => {
-    navigate('/auth');
+    navigate('/auth?mode=login');
   };
 
   const handleBaseLanguageSelect = (language: string) => {
