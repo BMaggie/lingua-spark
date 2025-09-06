@@ -20,7 +20,7 @@ const AuthPage = () => {
           console.log('AuthPage: Redirecting admin to /admin');
           navigate('/admin', { replace: true });
         } else {
-          console.log('AuthPage: Redirecting user to /');
+          console.log('AuthPage: Redirecting user to dashboard');
           navigate('/', { replace: true });
         }
       }, 100);

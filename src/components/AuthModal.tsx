@@ -20,8 +20,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    role: 'user' as 'admin' | 'user'
+    password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -73,7 +72,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
             data: {
               full_name: formData.name,
               username: formData.name.toLowerCase().replace(/\s+/g, '_'),
-              role: formData.role
+              role: 'user'
             },
             emailRedirectTo: `${window.location.origin}/`
           }
@@ -88,7 +87,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
         } else if (data.user) {
           const user = {
             name: formData.name,
-            role: formData.role,
+            role: 'user' as 'user',
             isNewUser: true
           };
           onAuthSuccess(user);
@@ -264,38 +263,6 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
             </div>
           )}
 
-          {mode === 'signup' && (
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Account Type
-              </Label>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="user"
-                    checked={formData.role === 'user'}
-                    onChange={(e) => handleInputChange('role', e.target.value)}
-                    className="text-blue-600"
-                  />
-                  <span className="text-sm">Learner</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={formData.role === 'admin'}
-                    onChange={(e) => handleInputChange('role', e.target.value)}
-                    className="text-blue-600"
-                  />
-                  <span className="text-sm">Admin</span>
-                </label>
-              </div>
-            </div>
-          )}
 
           <Button
             type="submit"
