@@ -7,6 +7,7 @@ import LandingPage from '@/components/LandingPage';
 import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
+import NewUserLanguageFlow from '@/components/NewUserLanguageFlow';
 import { LogOut } from 'lucide-react';
 import RoleGuard from '@/components/RoleGuard';
 import AnimatedLoader from '@/components/AnimatedLoader';
@@ -149,6 +150,15 @@ const Index = () => {
   // If user is not authenticated, show landing page
   if (!isAuthenticated || currentView === 'landing') {
     return <LandingPage onLanguageSelect={handleLanguageSelect} />;
+  }
+
+  // If user is authenticated but no languages selected, show new user flow
+  if (isAuthenticated && (!selectedLanguages.base || !selectedLanguages.target)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <NewUserLanguageFlow onComplete={handleLanguageSelect} />
+      </div>
+    );
   }
 
   // If user is authenticated and has selected languages, show the app

@@ -11,23 +11,26 @@ const AuthPage = () => {
   useEffect(() => {
     // Only navigate if user is authenticated AND not loading
     if (isAuthenticated && user && !isLoading) {
-      // Redirect based on role
-      if (user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
+      console.log('AuthPage: User authenticated, role:', user.role);
+      // Redirect based on role with a small delay to ensure state is settled
+      setTimeout(() => {
+        if (user.role === 'admin') {
+          console.log('AuthPage: Redirecting admin to /admin');
+          navigate('/admin', { replace: true });
+        } else {
+          console.log('AuthPage: Redirecting user to /');
+          navigate('/', { replace: true });
+        }
+      }, 100);
     }
   }, [isAuthenticated, user, navigate, isLoading]);
 
-  const handleAuthSuccess = () => {
-    // AuthProvider will handle the redirect via useEffect above
-    // Adding a small delay to ensure user object is fully loaded
+  const handleAuthSuccess = (userData?: { isNewUser?: boolean }) => {
+    // For immediate redirect without waiting for useEffect
     setTimeout(() => {
-      if (isAuthenticated && user) {
-        navigate(user.role === 'admin' ? '/admin' : '/');
-      }
-    }, 100);
+      // Force a refresh of auth state and then navigate
+      window.location.reload();
+    }, 200);
   };
 
   return (

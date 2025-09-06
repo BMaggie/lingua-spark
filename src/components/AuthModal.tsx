@@ -12,7 +12,7 @@ interface AuthModalProps {
   onClose: () => void;
   mode: 'login' | 'signup' | 'forgot-password';
   onModeChange: (mode: 'login' | 'signup' | 'forgot-password') => void;
-  onAuthSuccess: (user: { name: string; role: 'admin' | 'user' }) => void;
+  onAuthSuccess: (user?: { name: string; role: 'admin' | 'user'; isNewUser?: boolean }) => void;
 }
 
 const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthModalProps) => {
@@ -46,7 +46,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
         } else if (data.user) {
           // Wait a moment for the auth state to update in the AuthProvider
           setTimeout(() => {
-            onAuthSuccess({ name: 'User', role: 'user' });
+            onAuthSuccess();
             onClose();
             toast({
               title: "Welcome back!",
@@ -88,7 +88,8 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
         } else if (data.user) {
           const user = {
             name: formData.name,
-            role: formData.role
+            role: formData.role,
+            isNewUser: true
           };
           onAuthSuccess(user);
           onClose();
