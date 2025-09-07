@@ -82,27 +82,89 @@ export interface LeaderboardEntry {
 }
 
 export type Database = {
+  // Allows to automatically instanciate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.4"
+  }
   public: {
     Tables: {
       profiles: {
-        Row: Profile
-        Insert: Omit<Profile, 'id'>
-        Update: Partial<Profile>
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
       }
-      vocabulary_stages: {
-        Row: VocabularyStage
-        Insert: VocabularyStage
-        Update: Partial<VocabularyStage>
-      }
-      quiz_stages: {
-        Row: QuizStage
-        Insert: QuizStage
-        Update: Partial<QuizStage>
-      }
-      leaderboard: {
-        Row: LeaderboardEntry
-        Insert: LeaderboardEntry
-        Update: Partial<LeaderboardEntry>
+      user_stats: {
+        Row: {
+          base_language: string | null
+          created_at: string | null
+          id: string
+          level: number | null
+          points: number | null
+          streak: number | null
+          target_language: string | null
+          updated_at: string | null
+          user_id: string
+          words_learned: number | null
+        }
+        Insert: {
+          base_language?: string | null
+          created_at?: string | null
+          id?: string
+          level?: number | null
+          points?: number | null
+          streak?: number | null
+          target_language?: string | null
+          updated_at?: string | null
+          user_id: string
+          words_learned?: number | null
+        }
+        Update: {
+          base_language?: string | null
+          created_at?: string | null
+          id?: string
+          level?: number | null
+          points?: number | null
+          streak?: number | null
+          target_language?: string | null
+          updated_at?: string | null
+          user_id?: string
+          words_learned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
