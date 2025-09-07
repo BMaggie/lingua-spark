@@ -8,10 +8,10 @@ import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
 import ProgressDashboard from '@/components/ProgressDashboard';
 import NewUserLanguageFlow from '@/components/NewUserLanguageFlow';
-import { LogOut } from 'lucide-react';
+import { LogOut, Star, Settings, BookOpen, Trophy, Users } from 'lucide-react';
 import RoleGuard from '@/components/RoleGuard';
 import AnimatedLoader from '@/components/AnimatedLoader';
-import { BookOpen, Star, Settings } from 'lucide-react';
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from '@/hooks/useAuth';
 
@@ -103,9 +103,15 @@ const Index = () => {
   const handleSectionChange = (section: string) => {
     if (section === 'admin' && user?.role === 'admin') {
       navigate('/admin');
-      return;
+    } else if (section === 'lessons') {
+      navigate('/course');
+    } else if (section === 'achievements') {
+      navigate('/achievements');
+    } else if (section === 'community') {
+      navigate('/community');
+    } else {
+      setCurrentSection(section);
     }
-    setCurrentSection(section);
   };
 
   const updateProgress = async (points: number, wordsLearned: number = 0) => {
@@ -224,9 +230,12 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="flex space-x-8">
               {[
-                { key: 'dashboard', label: 'Dashboard' },
-                { key: 'vocabulary', label: 'Vocabulary' },
-                { key: 'quiz', label: 'Quiz' },
+                { key: 'dashboard', label: 'Dashboard', icon: null },
+                { key: 'lessons', label: 'Lessons', icon: BookOpen },
+                { key: 'vocabulary', label: 'Practice', icon: null },
+                { key: 'quiz', label: 'Quiz', icon: null },
+                { key: 'achievements', label: 'Achievements', icon: Trophy },
+                { key: 'community', label: 'Community', icon: Users },
               ].map((item, index) => (
                 <motion.div
                   key={item.key}
@@ -241,6 +250,7 @@ const Index = () => {
                     onClick={() => handleSectionChange(item.key)}
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 transition-all duration-300"
                   >
+                    {item.icon && <item.icon className="h-4 w-4 mr-2" />}
                     {item.label}
                   </Button>
                 </motion.div>
