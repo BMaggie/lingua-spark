@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -41,6 +41,42 @@ export type Database = {
           role?: string | null
           updated_at?: string | null
           username?: string | null
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          achievements: string[] | null
+          id: string
+          last_activity_date: string | null
+          quiz_stages_completed: number[] | null
+          streak_days: number | null
+          target_language: string
+          total_points: number | null
+          user_id: string | null
+          vocabulary_stages_completed: number[] | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          id?: string
+          last_activity_date?: string | null
+          quiz_stages_completed?: number[] | null
+          streak_days?: number | null
+          target_language: string
+          total_points?: number | null
+          user_id?: string | null
+          vocabulary_stages_completed?: number[] | null
+        }
+        Update: {
+          achievements?: string[] | null
+          id?: string
+          last_activity_date?: string | null
+          quiz_stages_completed?: number[] | null
+          streak_days?: number | null
+          target_language?: string
+          total_points?: number | null
+          user_id?: string | null
+          vocabulary_stages_completed?: number[] | null
         }
         Relationships: []
       }
@@ -96,7 +132,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      update_user_progress: {
+        Args: {
+          p_points_earned?: number
+          p_quiz_stage?: number
+          p_target_language: string
+          p_user_id: string
+          p_vocabulary_stage?: number
+        }
+        Returns: {
+          achievements: string[] | null
+          id: string
+          last_activity_date: string | null
+          quiz_stages_completed: number[] | null
+          streak_days: number | null
+          target_language: string
+          total_points: number | null
+          user_id: string | null
+          vocabulary_stages_completed: number[] | null
+        }
+      }
     }
     Enums: {
       [_ in never]: never
