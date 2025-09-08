@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_language_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          learning_languages: string[]
+          primary_learning_language: string | null
+          primary_spoken_language: string | null
+          spoken_languages: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          learning_languages?: string[]
+          primary_learning_language?: string | null
+          primary_spoken_language?: string | null
+          spoken_languages?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          learning_languages?: string[]
+          primary_learning_language?: string | null
+          primary_spoken_language?: string | null
+          spoken_languages?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           achievements: string[] | null
