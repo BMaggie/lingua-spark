@@ -31,6 +31,11 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
 
     try {
       if (mode === 'login') {
+        toast({
+          title: "Logging in...",
+          description: "Please wait while we log you in",
+        });
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,

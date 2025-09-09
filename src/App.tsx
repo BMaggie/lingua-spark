@@ -1,9 +1,15 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/query-core";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+<<<<<<< Updated upstream
 import { AuthProvider } from "@/hooks/useAuth";
+=======
+import { AuthProvider } from "@/components/AuthProvider";
+>>>>>>> Stashed changes
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import AdminPage from "./pages/AdminPage";
@@ -17,6 +23,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
+<<<<<<< Updated upstream
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -39,12 +46,23 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+=======
+        <BrowserRouter>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/" element={<Index />} />
+>>>>>>> Stashed changes
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
+<<<<<<< Updated upstream
+=======
+    {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+>>>>>>> Stashed changes
   </QueryClientProvider>
 );
 
