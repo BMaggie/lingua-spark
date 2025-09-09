@@ -1,25 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Toaster } from "@/components/ui/toaster";
-import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import LandingPage from '@/components/LandingPage';
+import LocalizedDashboard from '@/components/enhanced/LocalizedDashboard';
 import VocabularyCard from '@/components/VocabularyCard';
 import QuizSection from '@/components/QuizSection';
-import ProgressDashboard from '@/components/ProgressDashboard';
-import NewUserLanguageFlow from '@/components/NewUserLanguageFlow';
-import { LogOut, Star, Settings, BookOpen, Trophy, Users } from 'lucide-react';
-import RoleGuard from '@/components/RoleGuard';
-import AnimatedLoader from '@/components/AnimatedLoader';
-
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  const { user, isLoading, isAuthenticated, signOut } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
-  const [currentView, setCurrentView] = useState<'landing' | 'app'>('landing');
-  const [selectedLanguages, setSelectedLanguages] = useState({ base: '', target: '' });
   const [currentSection, setCurrentSection] = useState('dashboard');
   const [userProgress, setUserProgress] = useState({
     wordsLearned: 0,
@@ -27,19 +18,43 @@ const Index = () => {
     points: 0,
     level: 1
   });
+  const [userLanguages, setUserLanguages] = useState({
+    spoken: [] as string[],
+    learning: [] as string[],
+    primarySpoken: '',
+    primaryLearning: ''
+  });
+  const [hasLanguagePreferences, setHasLanguagePreferences] = useState(false);
 
-  // Load user progress when user is authenticated
+  // Load user data when authenticated
   useEffect(() => {
     if (isAuthenticated && user) {
-      loadUserProgress();
+      loadUserData();
     }
   }, [isAuthenticated, user]);
 
-  const loadUserProgress = async () => {
+  const loadUserData = async () => {
     if (!user) return;
 
     try {
-      // Fetch or create user stats
+      // Load language preferences
+      const { data: languagePrefs } = await supabase
+        .from('user_language_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (languagePrefs) {
+        setUserLanguages({
+          spoken: languagePrefs.spoken_languages || [],
+          learning: languagePrefs.learning_languages || [],
+          primarySpoken: languagePrefs.primary_spoken_language || 'en',
+          primaryLearning: languagePrefs.primary_learning_language || 'es'
+        });
+        setHasLanguagePreferences((languagePrefs.spoken_languages?.length || 0) > 0 && (languagePrefs.learning_languages?.length || 0) > 0);
+      }
+
+      // Load user stats
       const { data: stats } = await supabase
         .from('user_stats')
         .select('*')
@@ -53,50 +68,9 @@ const Index = () => {
           points: stats.points || 0,
           level: stats.level || 1
         });
-
-        // If user has languages set, show app view
-        if (stats.base_language && stats.target_language) {
-          setSelectedLanguages({ 
-            base: stats.base_language, 
-            target: stats.target_language 
-          });
-          setCurrentView('app');
-        }
-      } else {
-        // Create initial stats record
-        await supabase
-          .from('user_stats')
-          .insert({
-            user_id: user.id,
-            words_learned: 0,
-            streak: 0,
-            points: 0,
-            level: 1
-          });
       }
     } catch (error) {
-      console.error('Error loading user progress:', error);
-    }
-  };
-
-  const handleLanguageSelect = async (languages: { base: string; target: string }) => {
-    setSelectedLanguages(languages);
-    setCurrentView('app');
-    setCurrentSection('dashboard');
-    
-    // Update user stats with selected languages
-    if (user) {
-      await supabase
-        .from('user_stats')
-        .upsert({
-          user_id: user.id,
-          base_language: languages.base,
-          target_language: languages.target,
-          words_learned: userProgress.wordsLearned,
-          streak: userProgress.streak,
-          points: userProgress.points,
-          level: userProgress.level
-        });
+      console.error('Error loading user data:', error);
     }
   };
 
@@ -114,171 +88,27 @@ const Index = () => {
     }
   };
 
-  const updateProgress = async (points: number, wordsLearned: number = 0) => {
-    const newProgress = {
-      ...userProgress,
-      points: userProgress.points + points,
-      wordsLearned: userProgress.wordsLearned + wordsLearned,
-      level: Math.floor((userProgress.points + points) / 100) + 1
-    };
-    
-    setUserProgress(newProgress);
-    
-    // Update in database
-    if (user) {
-      await supabase
-        .from('user_stats')
-        .upsert({
-          user_id: user.id,
-          ...newProgress,
-          base_language: selectedLanguages.base,
-          target_language: selectedLanguages.target
-        });
-    }
-  };
-
-  const handleBackToLanding = async () => {
-    await signOut();
-    setCurrentView('landing');
-    setSelectedLanguages({ base: '', target: '' });
-    navigate('/');
-  };
-
-  // Show loading animation while checking auth state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <AnimatedLoader text="Loading LinguaSpark..." />
-      </div>
-    );
+  // Show landing page for non-authenticated users
+  if (!isAuthenticated) {
+    return <LandingPage onLanguageSelect={() => {}} />;
   }
 
-  // If user is not authenticated, show landing page
-  if (!isAuthenticated || currentView === 'landing') {
-    return <LandingPage onLanguageSelect={handleLanguageSelect} />;
-  }
-
-  // If user is authenticated but no languages selected, show new user flow
-  if (isAuthenticated && (!selectedLanguages.base || !selectedLanguages.target)) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <NewUserLanguageFlow onComplete={handleLanguageSelect} />
-      </div>
-    );
-  }
-
-  // If user is authenticated and has selected languages, show the app
-  if (selectedLanguages.base && selectedLanguages.target) {
+  // Show localized dashboard for authenticated users with language preferences
+  if (hasLanguagePreferences) {
     return (
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+        className="min-h-screen"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.header 
-          className="bg-white shadow-sm border-b"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <motion.button 
-                  onClick={handleBackToLanding}
-                  className="text-2xl font-bold gradient-text hover:opacity-80 transition-opacity"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  LinguaSpark
-                </motion.button>
-                <span className="text-sm text-gray-500">
-                  {selectedLanguages.base} → {selectedLanguages.target}
-                </span>
-              </div>
-              
-              <div className="flex items-center space-x-4">
-                <motion.div 
-                  className="flex items-center space-x-2"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <Star className="h-4 w-4 text-yellow-500 animate-pulse" />
-                  <span className="font-semibold">{userProgress.points}</span>
-                </motion.div>
-                <div className="text-sm text-gray-600">Level {userProgress.level}</div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleBackToLanding}
-                  className="flex items-center gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Back to Home
-                </Button>
-              </div>
-            </div>
-          </div>
-        </motion.header>
-
-        <motion.nav 
-          className="bg-white border-b"
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex space-x-8">
-              {[
-                { key: 'dashboard', label: 'Dashboard', icon: null },
-                { key: 'lessons', label: 'Lessons', icon: BookOpen },
-                { key: 'vocabulary', label: 'Practice', icon: null },
-                { key: 'quiz', label: 'Quiz', icon: null },
-                { key: 'achievements', label: 'Achievements', icon: Trophy },
-                { key: 'community', label: 'Community', icon: Users },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.key}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    variant={currentSection === item.key ? 'default' : 'ghost'}
-                    onClick={() => handleSectionChange(item.key)}
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 transition-all duration-300"
-                  >
-                    {item.icon && <item.icon className="h-4 w-4 mr-2" />}
-                    {item.label}
-                  </Button>
-                </motion.div>
-              ))}
-              
-              {/* Admin button with role guard */}
-              <RoleGuard allowedRoles={['admin']}>
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.3 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    variant="ghost"
-                    onClick={() => handleSectionChange('admin')}
-                    className="rounded-none border-b-2 border-transparent transition-all duration-300"
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Admin
-                  </Button>
-                </motion.div>
-              </RoleGuard>
-            </div>
-          </div>
-        </motion.nav>
-
+        <LocalizedDashboard 
+          progress={userProgress}
+          languages={userLanguages}
+          onSectionChange={handleSectionChange}
+          userName={user?.profile?.full_name || 'Student'}
+        />
+        
         <main className="container mx-auto px-4 py-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -288,38 +118,28 @@ const Index = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {currentSection === 'dashboard' && (
-                <ProgressDashboard 
-                  progress={userProgress}
-                  languages={selectedLanguages}
-                  onSectionChange={handleSectionChange}
-                />
-              )}
-              
               {currentSection === 'vocabulary' && (
                 <VocabularyCard 
-                  languages={selectedLanguages}
-                  onProgress={updateProgress}
+                  languages={{ base: userLanguages.primarySpoken, target: userLanguages.primaryLearning }}
+                  onProgress={() => {}}
                 />
               )}
               
               {currentSection === 'quiz' && (
                 <QuizSection 
-                  languages={selectedLanguages}
-                  onProgress={updateProgress}
+                  languages={{ base: userLanguages.primarySpoken, target: userLanguages.primaryLearning }}
+                  onProgress={() => {}}
                 />
               )}
             </motion.div>
           </AnimatePresence>
         </main>
-
-        <Toaster />
       </motion.div>
     );
   }
 
-  // Fallback - should show landing page for language selection
-  return <LandingPage onLanguageSelect={handleLanguageSelect} />;
+  // Fallback - LanguageMiddleware should handle language selection flow
+  return <LandingPage onLanguageSelect={() => {}} />;
 };
 
 export default Index;
