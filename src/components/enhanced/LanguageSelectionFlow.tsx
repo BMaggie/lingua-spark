@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, Globe, Users } from 'lucide-react';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Language {
   code: string;
@@ -49,21 +50,31 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
   const [step, setStep] = useState<'spoken' | 'learning'>('spoken');
   const [selectedSpokenLanguages, setSelectedSpokenLanguages] = useState<string[]>([]);
   const [selectedLearningLanguages, setSelectedLearningLanguages] = useState<string[]>([]);
+  
+  const focusTrapRef = useFocusTrap(true);
+
+  useEffect(() => {
+    const handleEscape = () => {
+      if (onClose) {
+        onClose();
+      }
+    };
+
+    const container = focusTrapRef.current;
+    if (container) {
+      container.addEventListener('modal-escape', handleEscape);
+      return () => container.removeEventListener('modal-escape', handleEscape);
+    }
+  }, [onClose]);
 
   const handleSpokenLanguageToggle = (languageCode: string) => {
-    setSelectedSpokenLanguages(prev => 
-      prev.includes(languageCode) 
-        ? prev.filter(code => code !== languageCode)
-        : [...prev, languageCode]
-    );
+    // Only allow one spoken language for simplicity
+    setSelectedSpokenLanguages([languageCode]);
   };
 
   const handleLearningLanguageToggle = (languageCode: string) => {
-    setSelectedLearningLanguages(prev => 
-      prev.includes(languageCode) 
-        ? prev.filter(code => code !== languageCode)
-        : [...prev, languageCode]
-    );
+    // Only allow one learning language for simplicity
+    setSelectedLearningLanguages([languageCode]);
   };
 
   const handleContinueToLearning = () => {
@@ -107,12 +118,22 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
       transition={{ duration: 0.2 }}
     >
       <Card 
-        className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-lg relative ${
+        className={`p-3 cursor-pointer transition-all duration-300 hover:shadow-md relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
           isSelected 
             ? 'ring-2 ring-primary border-primary bg-primary/5' 
             : 'border-border hover:border-primary/50'
         }`}
         onClick={() => onToggle(language.code)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle(language.code);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-pressed={isSelected}
+        aria-label={`Select ${language.name} (${language.speakers})`}
       >
         {isSelected && (
           <motion.div 
@@ -134,11 +155,11 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
           </Badge>
         )}
         
-        <div className="flex flex-col items-center space-y-3">
-          <div className="text-4xl">{language.flag}</div>
+        <div className="flex flex-col items-center space-y-2">
+          <div className="text-3xl">{language.flag}</div>
           <div className="text-center">
-            <h3 className="font-semibold text-foreground">{language.name}</h3>
-            <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1">
+            <h3 className="font-semibold text-foreground text-sm">{language.name}</h3>
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1 mt-1">
               <Users className="h-3 w-3" />
               {language.speakers}
             </p>
@@ -158,29 +179,44 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
   );
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="language-modal-title"
+    >
       <motion.div 
-        className="bg-card rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        ref={focusTrapRef}
+        className="bg-card rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] overflow-hidden border"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="p-6 border-b">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                <Globe className="h-6 w-6 text-primary" />
-                {step === 'spoken' ? 'Select Your Language(s)' : 'Choose Languages to Learn'}
+        <div className="p-4 sm:p-6 border-b">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h2 
+                id="language-modal-title"
+                className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2"
+              >
+                <Globe className="h-5 w-5 text-primary" />
+                {step === 'spoken' ? 'Select Your Language' : 'Choose Language to Learn'}
               </h2>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-muted-foreground mt-1 text-sm">
                 {step === 'spoken' 
-                  ? 'Which languages do you speak? This will be your app interface language.'
-                  : 'Select the languages you want to learn. You can choose multiple!'
+                  ? 'Which language do you speak? This will be your app interface.'
+                  : 'Select one language you want to learn first.'
                 }
               </p>
             </div>
             {onClose && (
-              <Button variant="ghost" size="sm" onClick={onClose}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onClose}
+                aria-label="Close language selection"
+                className="shrink-0"
+              >
                 ✕
               </Button>
             )}
@@ -194,7 +230,7 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[50vh]">
           <AnimatePresence mode="wait">
             {step === 'spoken' && (
               <motion.div
@@ -204,7 +240,7 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {SPOKEN_LANGUAGES.map((language, index) => (
                     <motion.div
                       key={language.code}
@@ -231,7 +267,7 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {LEARNING_LANGUAGES
                     .filter(lang => !selectedSpokenLanguages.includes(lang.code))
                     .map((language, index) => (
@@ -255,20 +291,21 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
           </AnimatePresence>
         </div>
 
-        <div className="p-6 border-t bg-muted/30">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
+        <div className="p-4 sm:p-6 border-t bg-muted/30">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-sm text-muted-foreground text-center sm:text-left">
               {step === 'spoken' 
-                ? `${selectedSpokenLanguages.length} language(s) selected`
-                : `${selectedLearningLanguages.length} language(s) to learn`
+                ? `${selectedSpokenLanguages.length} language selected`
+                : `${selectedLearningLanguages.length} language to learn`
               }
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
               {step === 'learning' && (
                 <Button 
                   variant="outline" 
                   onClick={() => setStep('spoken')}
+                  className="flex-1 sm:flex-none"
                 >
                   Back
                 </Button>
@@ -278,7 +315,8 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
                 <Button 
                   onClick={handleContinueToLearning}
                   disabled={selectedSpokenLanguages.length === 0}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-base font-medium flex-1 sm:flex-none"
+                  aria-describedby="continue-help"
                 >
                   Continue
                   <ArrowRight className="h-4 w-4" />
@@ -289,13 +327,22 @@ const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowPro
                 <Button 
                   onClick={handleComplete}
                   disabled={selectedLearningLanguages.length === 0}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-base font-medium flex-1 sm:flex-none"
+                  aria-describedby="complete-help"
                 >
                   Start Learning
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               )}
             </div>
+          </div>
+          
+          {/* Hidden helper text for screen readers */}
+          <div id="continue-help" className="sr-only">
+            Select a language you speak to continue to language learning selection
+          </div>
+          <div id="complete-help" className="sr-only">
+            Select a language to learn and start your learning journey
           </div>
         </div>
       </motion.div>

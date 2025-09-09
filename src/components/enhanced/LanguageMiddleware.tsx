@@ -114,8 +114,8 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
     }
   };
 
-  // Show loading while checking authentication or language preferences
-  if (isLoading || isCheckingLanguages) {
+  // Show loading only when checking languages or authentication
+  if (isLoading || (isAuthenticated && isCheckingLanguages)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
         <AnimatedLoader text="Setting up your experience..." />
@@ -123,18 +123,18 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
     );
   }
 
-  // Show language selection flow if needed
+  // Show language selection flow if authenticated user needs language setup
   if (isAuthenticated && showLanguageFlow) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <LanguageSelectionFlow 
-          onComplete={handleLanguageSelection}
-        />
-      </div>
+      <LanguageSelectionFlow 
+        onComplete={handleLanguageSelection}
+      />
     );
   }
 
-  // Render children if user is not authenticated or has complete language preferences
+  // Render children only if:
+  // 1. User is not authenticated (show auth flow), OR
+  // 2. User is authenticated and has complete language preferences
   return <>{children}</>;
 };
 
