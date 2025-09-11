@@ -7,17 +7,27 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import LanguageMiddleware from "@/components/enhanced/LanguageMiddleware";
-import Index from "./pages/Index";
-import AuthPage from "./pages/AuthPage";
-import AdminPage from "./pages/AdminPage";
-import CoursePage from "./pages/CoursePage";
-import GamePage from "./pages/GamePage";
-import CommunityPage from "./pages/CommunityPage";
-import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import DashboardPage from "./pages/DashboardPage";
+import AnimatedLoader from "@/components/AnimatedLoader";
+import { Suspense, lazy } from "react";
+
+// Lazy load all route components
+const Index = lazy(() => import("./pages/Index"));
+const AuthPage = lazy(() => import("./pages/AuthPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const CoursePage = lazy(() => import("./pages/CoursePage"));
+const GamePage = lazy(() => import("./pages/GamePage"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 
 const queryClient = new QueryClient();
+
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+    <AnimatedLoader text="Loading..." />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -27,30 +37,32 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <LanguageMiddleware>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route 
-                path="/admin/*" 
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/course" element={<CoursePage />} />
-              <Route path="/achievements" element={<GamePage />} />
-              <Route path="/community" element={<CommunityPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route 
+                  path="/admin/*" 
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/course" element={<CoursePage />} />
+                <Route path="/achievements" element={<GamePage />} />
+                <Route path="/community" element={<CommunityPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </LanguageMiddleware>
         </BrowserRouter>
       </TooltipProvider>
