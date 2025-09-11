@@ -13,5 +13,15 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: true,
+    async onAuthStateChange(event, session) {
+      if (event === 'SIGNED_IN') {
+        // Prefetch user data
+        await Promise.all([
+          supabase.from('user_preferences').select('*').single(),
+          supabase.from('user_progress').select('*').single()
+        ]).catch(() => {}); // Ignore errors, they'll be handled by the components
+      }
+    }
   }
 });

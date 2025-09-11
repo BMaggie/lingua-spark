@@ -1,117 +1,87 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-export type UserRole = 'user' | 'admin';
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  role: UserRole;
-  profile: {
-    full_name?: string;
-    username?: string;
-    avatar_url?: string;
-  };
-}
-
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | null;
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signOut: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  userRole: 'admin' | 'user' | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<'admin' | 'user' | null>(null);
 
-  const fetchUserProfile = async (userId: string): Promise<AuthUser | null> => {
-    try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching user profile:', error);
-        return null;
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserRole(session.user);
       }
+      setIsLoading(false);
+    });
 
-      const { data: { session } } = await supabase.auth.getSession();
-      const authUser = session?.user;
-
-      if (!authUser) return null;
-
-      // If no profile exists, create one (fallback for existing users)
-      if (!profile) {
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            id: userId,
-            full_name: authUser.user_metadata?.full_name || '',
-            username: authUser.user_metadata?.username || '',
-            role: authUser.user_metadata?.role || 'user',
-          })
-          .select()
-          .single();
-
-        if (createError) {
-          console.error('Error creating profile:', createError);
-          return null;
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await fetchUserRole(session.user);
+        } else {
+          setUserRole(null);
         }
+        
+        setIsLoading(false);
+      }
+    );
 
-        return {
-          id: userId,
-          email: authUser.email || '',
-          role: (newProfile.role as UserRole) || 'user',
-          profile: {
-            full_name: newProfile.full_name,
-            username: newProfile.username,
-            avatar_url: newProfile.avatar_url,
-          },
-        };
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserRole = async (user: User) => {
+    try {
+      // Check user metadata first
+      const role = user.user_metadata?.role;
+      if (role === 'admin' || role === 'user') {
+        setUserRole(role);
+        return;
       }
 
-      return {
-        id: userId,
-        email: authUser.email || '',
-        role: (profile.role as UserRole) || 'user',
-        profile: {
-          full_name: profile.full_name,
-          username: profile.username,
-          avatar_url: profile.avatar_url,
-        },
-      };
-    } catch (error) {
-      console.error('Error in fetchUserProfile:', error);
-      return null;
-    }
-  };
+      // If no role in metadata, check profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
 
-  const refreshUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const authUser = await fetchUserProfile(session.user.id);
-      setUser(authUser);
+      if (profile?.role) {
+        setUserRole(profile.role);
+      } else {
+        // Default to user role if no role is found
+        setUserRole('user');
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      setUserRole('user'); // Default to user role
     }
   };
 
@@ -119,56 +89,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
+    setUserRole(null);
   };
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        setSession(session);
-        
-        if (session?.user) {
-          // Use setTimeout to avoid potential issues with onAuthStateChange
-          setTimeout(async () => {
-            const authUser = await fetchUserProfile(session.user.id);
-            setUser(authUser);
-            setIsLoading(false);
-          }, 0);
-        } else {
-          setUser(null);
-          setIsLoading(false);
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        fetchUserProfile(session.user.id).then((authUser) => {
-          setUser(authUser);
-          setSession(session);
-          setIsLoading(false);
-        });
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const isAuthenticated = !!user && !!session;
+  const value = {
+    user,
+    session,
+    isLoading,
+    isAuthenticated: !!user,
+    signOut,
+    userRole
+  };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      session,
-      isLoading,
-      isAuthenticated,
-      signOut,
-      refreshUser,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

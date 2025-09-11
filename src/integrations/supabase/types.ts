@@ -6,6 +6,81 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface UserProgress {
+  id: string
+  user_id: string
+  target_language: string
+  total_points: number
+  vocabulary_stages_completed: number[]
+  quiz_stages_completed: number[]
+  streak_days: number
+  last_activity_date: string
+  achievements: string[]
+}
+
+export interface Profile {
+  id: string
+  user_id: string
+  username: string
+  avatar_url: string
+  full_name: string
+  languages_spoken: string[]
+  learning_languages: {
+    base: string
+    target: string
+  }
+  points: number
+  current_level: number
+  streak_days: number
+  last_activity_date: string
+  stages_completed: {
+    vocabulary: number[]
+    quiz: number[]
+  }
+  achievements: string[]
+}
+
+export interface VocabularyStage {
+  id: number
+  level: number
+  words: {
+    word: string
+    translation: string
+    audio_url?: string
+    difficulty: 'easy' | 'medium' | 'hard'
+  }[]
+}
+
+export interface QuizQuestion {
+  question: string
+  options: string[]
+  correct_answer: string
+  points: number
+  difficulty: 'easy' | 'medium' | 'hard'
+  explanation?: string
+  category: string
+}
+
+export interface QuizStage {
+  id: number
+  level: number
+  name: string
+  description: string
+  questions: QuizQuestion[]
+  required_level?: number
+  unlock_points?: number
+}
+
+export interface LeaderboardEntry {
+  user_id: string
+  username: string
+  avatar_url: string
+  points: number
+  level: number
+  learning_language: string
+  streak_days: number
+}
+
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -165,6 +240,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+
+      get_leaderboard: {
+        Args: { target_language: string; limit?: number }
+        Returns: LeaderboardEntry[]
+
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -188,13 +268,11 @@ export type Database = {
           user_id: string | null
           vocabulary_stages_completed: number[] | null
         }
+
       }
     }
     Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
+      difficulty: 'easy' | 'medium' | 'hard'
     }
   }
 }

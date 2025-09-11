@@ -31,6 +31,11 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
 
     try {
       if (mode === 'login') {
+        toast({
+          title: "Logging in...",
+          description: "Please wait while we log you in",
+        });
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
@@ -218,7 +223,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
             />
             {mode === 'login' && (
               <p className="text-xs text-gray-500">
-                Use email with "admin" for admin access (e.g., admin@test.com)
+                {/* Use email with "admin" for admin access (e.g., admin@test.com) */}
               </p>
             )}
           </div>
