@@ -23,60 +23,39 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
-
         <Toaster />
         <Sonner />
         <BrowserRouter>
-
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route 
-              path="/admin/*" 
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-
-        <BrowserRouter>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-
           <LanguageMiddleware>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/admin" element={<AdminPage />} />
+              <Route 
+                path="/admin/*" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/course" element={<CoursePage />} />
               <Route path="/achievements" element={<GamePage />} />
               <Route path="/community" element={<CommunityPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </LanguageMiddleware>
-
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
-
     {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-
   </QueryClientProvider>
 );
 
