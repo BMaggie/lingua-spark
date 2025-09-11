@@ -1,14 +1,20 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import type { Profile } from '@/integrations/supabase/types';
+
+interface AuthUser extends User {
+  profile: Profile;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signOut: () => Promise<void>;
   userRole: 'admin' | 'user' | null;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,7 +28,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<'admin' | 'user' | null>(null);
@@ -31,57 +37,81 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
       if (session?.user) {
-        fetchUserRole(session.user);
+        fetchUserData(session.user);
+      } else {
+        setUser(null);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
         
         if (session?.user) {
-          await fetchUserRole(session.user);
+          await fetchUserData(session.user);
         } else {
+          setUser(null);
           setUserRole(null);
+          setIsLoading(false);
         }
-        
-        setIsLoading(false);
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserRole = async (user: User) => {
+  const fetchUserData = async (authUser: User) => {
     try {
-      // Check user metadata first
-      const role = user.user_metadata?.role;
-      if (role === 'admin' || role === 'user') {
-        setUserRole(role);
-        return;
-      }
-
-      // If no role in metadata, check profiles table
-      const { data: profile } = await supabase
+      setIsLoading(true);
+      
+      // Fetch profile data
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
+        .select('*')
+        .eq('user_id', authUser.id)
         .single();
 
-      if (profile?.role) {
-        setUserRole(profile.role);
-      } else {
-        // Default to user role if no role is found
-        setUserRole('user');
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Error fetching profile:', profileError);
       }
+
+      // Create user object with profile
+      const userWithProfile: AuthUser = {
+        ...authUser,
+        profile: profile || {
+          id: '',
+          user_id: authUser.id,
+          username: authUser.email?.split('@')[0] || 'user',
+          avatar_url: '',
+          full_name: authUser.user_metadata?.full_name || '',
+          languages_spoken: [],
+          learning_languages: { base: '', target: '' },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      };
+
+      setUser(userWithProfile);
+      
+      // Set user role
+      const role = authUser.user_metadata?.role || profile?.role || 'user';
+      setUserRole(role);
+      
     } catch (error) {
-      console.error('Error fetching user role:', error);
-      setUserRole('user'); // Default to user role
+      console.error('Error fetching user data:', error);
+      setUserRole('user');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refreshUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      await fetchUserData(session.user);
     }
   };
 
@@ -98,7 +128,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isLoading,
     isAuthenticated: !!user,
     signOut,
-    userRole
+    userRole,
+    refreshUser
   };
 
   return (

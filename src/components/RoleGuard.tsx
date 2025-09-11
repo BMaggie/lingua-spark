@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
-import { useAuth, UserRole } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
+
+type UserRole = 'admin' | 'user';
 
 interface RoleGuardProps {
   children: ReactNode;
@@ -8,13 +10,13 @@ interface RoleGuardProps {
 }
 
 const RoleGuard = ({ children, allowedRoles, fallback = null }: RoleGuardProps) => {
-  const { user, isAuthenticated } = useAuth();
+  const { userRole, isAuthenticated } = useAuth();
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !userRole) {
     return <>{fallback}</>;
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(userRole)) {
     return <>{fallback}</>;
   }
 
