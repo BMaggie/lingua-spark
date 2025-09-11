@@ -1,6 +1,7 @@
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Star, Clock, User, Check } from 'lucide-react';
+import { BookOpen, Star, Clock, User, Check, Target, Trophy, Flame } from 'lucide-react';
 
 interface ProgressDashboardProps {
   progress: {
@@ -14,17 +15,61 @@ interface ProgressDashboardProps {
 }
 
 const ProgressDashboard = ({ progress, languages, onSectionChange }: ProgressDashboardProps) => {
+  const { user } = useAuth();
+  
   const getLevelProgress = () => {
     const pointsInCurrentLevel = progress.points % 100;
     return (pointsInCurrentLevel / 100) * 100;
   };
 
+  const getPersonalizedGreeting = () => {
+    const hour = new Date().getHours();
+    const timeOfDay = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+    const userName = user?.profile?.full_name?.split(' ')[0] || 'Learner';
+    
+    return `Good ${timeOfDay}, ${userName}! 👋`;
+  };
+
   const getMotivationalMessage = () => {
-    if (progress.points === 0) return "Welcome to your language learning journey! 🌟";
-    if (progress.points < 50) return "Great start! Keep up the momentum! 💪";
+    if (progress.points === 0) return "Ready to start your language learning journey? 🌟";
+    if (progress.streak === 0) return "Let's get back on track with your studies! 💪";
+    if (progress.streak >= 7) return `Amazing ${progress.streak}-day streak! Keep it going! 🔥`;
+    if (progress.points < 50) return "Great start! Every word counts! 💪";
     if (progress.points < 100) return "You're making excellent progress! 🚀";
     if (progress.points < 200) return "Fantastic work! You're becoming fluent! ⭐";
     return "Amazing dedication! You're a language learning superstar! 🏆";
+  };
+
+  const getSuggestedLessons = () => {
+    const lessons = [
+      { 
+        title: "Basic Greetings", 
+        description: "Learn essential greetings and introductions",
+        difficulty: "Beginner",
+        xp: 50,
+        action: () => onSectionChange('lessons')
+      },
+      { 
+        title: "Daily Vocabulary", 
+        description: "Practice common words for everyday situations",
+        difficulty: "Beginner",
+        xp: 30,
+        action: () => onSectionChange('vocabulary')
+      },
+      { 
+        title: "Grammar Quiz", 
+        description: "Test your understanding of basic grammar rules",
+        difficulty: "Intermediate",
+        xp: 75,
+        action: () => onSectionChange('quiz')
+      }
+    ];
+    
+    // Filter based on user's progress
+    if (progress.wordsLearned < 10) {
+      return lessons.slice(0, 2); // Show only basic lessons for beginners
+    }
+    return lessons; // Show all lessons for more advanced users
   };
 
   const achievements = [
@@ -38,13 +83,28 @@ const ProgressDashboard = ({ progress, languages, onSectionChange }: ProgressDas
 
   return (
     <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">
-          Welcome back! 👋
+      {/* Welcome Section with personalized greeting */}
+      <div className="text-center space-y-4">
+        <h2 className="text-3xl font-bold text-gray-800">
+          {getPersonalizedGreeting()}
         </h2>
         <p className="text-gray-600 text-lg">
           {getMotivationalMessage()}
+        </p>
+        
+        {/* Daily Streak Highlight */}
+        {progress.streak > 0 && (
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 rounded-full border border-orange-200">
+            <Flame className="h-5 w-5 text-red-500" />
+            <span className="font-semibold text-red-700">
+              {progress.streak} day streak! 
+            </span>
+            <span className="text-sm text-red-600">Keep it going!</span>
+          </div>
+        )}
+        
+        <p className="text-sm text-gray-500">
+          Learning {languages.target} from {languages.base}
         </p>
       </div>
 
@@ -123,21 +183,66 @@ const ProgressDashboard = ({ progress, languages, onSectionChange }: ProgressDas
         </CardContent>
       </Card>
 
+      {/* Suggested Lessons */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5" />
+            Suggested Lessons
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {getSuggestedLessons().map((lesson, index) => (
+              <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 hover:shadow-md transition-all duration-300">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-800">{lesson.title}</h4>
+                  <p className="text-sm text-gray-600 mt-1">{lesson.description}</p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                      {lesson.difficulty}
+                    </span>
+                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      {lesson.xp} XP
+                    </span>
+                  </div>
+                </div>
+                <Button onClick={lesson.action} size="sm" className="ml-4">
+                  Start
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Continue Learning</CardTitle>
+          <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
+            <Button 
+              onClick={() => onSectionChange('lessons')}
+              className="h-20 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+            >
+              <div className="text-center">
+                <BookOpen className="h-6 w-6 mx-auto mb-1" />
+                <div className="font-semibold">Lessons</div>
+                <div className="text-xs opacity-90">Interactive learning</div>
+              </div>
+            </Button>
+            
             <Button 
               onClick={() => onSectionChange('vocabulary')}
               className="h-20 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
             >
               <div className="text-center">
                 <BookOpen className="h-6 w-6 mx-auto mb-1" />
-                <div className="font-semibold">Practice Vocabulary</div>
-                <div className="text-xs opacity-90">Learn new words</div>
+                <div className="font-semibold">Practice</div>
+                <div className="text-xs opacity-90">Vocabulary cards</div>
               </div>
             </Button>
             
@@ -146,9 +251,20 @@ const ProgressDashboard = ({ progress, languages, onSectionChange }: ProgressDas
               className="h-20 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
             >
               <div className="text-center">
-                <Star className="h-6 w-6 mx-auto mb-1" />
-                <div className="font-semibold">Take Quiz</div>
-                <div className="text-xs opacity-90">Test your knowledge</div>
+                <Target className="h-6 w-6 mx-auto mb-1" />
+                <div className="font-semibold">Quiz</div>
+                <div className="text-xs opacity-90">Test knowledge</div>
+              </div>
+            </Button>
+            
+            <Button 
+              onClick={() => onSectionChange('achievements')}
+              className="h-20 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800"
+            >
+              <div className="text-center">
+                <Trophy className="h-6 w-6 mx-auto mb-1" />
+                <div className="font-semibold">Achievements</div>
+                <div className="text-xs opacity-90">View progress</div>
               </div>
             </Button>
           </div>
