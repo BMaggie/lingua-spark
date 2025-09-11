@@ -5,7 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/query-core";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/components/AuthProvider";
+import { AuthProvider } from "@/hooks/useAuth";
 import LanguageMiddleware from "@/components/enhanced/LanguageMiddleware";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
