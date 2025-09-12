@@ -118,8 +118,8 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
   // Do not block public routes with loader
   const isPublicRoute = location.pathname === '/' || location.pathname.startsWith('/auth');
 
-  // Show loading only when needed and not on public routes
-  if (!isPublicRoute && (isLoading || (isAuthenticated && isCheckingLanguages))) {
+  // Only show loading for auth initialization, never for language checks
+  if (!isPublicRoute && isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
         <AnimatedLoader text="Setting up your experience..." />

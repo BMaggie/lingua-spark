@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import type { Profile } from '@/integrations/supabase/types';
+import type { Tables } from '@/integrations/supabase/types';
+
+type Profile = Tables<'profiles'>;
 
 interface AuthUser extends User {
   profile: Profile;
@@ -67,28 +69,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Fetch profile data
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', authUser.id)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Error fetching profile:', profileError);
-      }
-
-      // Create user object with profile
+      // Create user object with basic profile from metadata
       const userWithProfile: AuthUser = {
         ...authUser,
-        profile: profile || {
-          id: '',
-          user_id: authUser.id,
+        profile: {
+          id: authUser.id,
           username: authUser.email?.split('@')[0] || 'user',
-          avatar_url: '',
-          full_name: authUser.user_metadata?.full_name || '',
-          languages_spoken: [],
-          learning_languages: { base: '', target: '' },
+          avatar_url: null,
+          full_name: authUser.user_metadata?.full_name || null,
+          role: authUser.user_metadata?.role || 'user',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
@@ -97,8 +86,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(userWithProfile);
       
       // Set user role
-      const role = authUser.user_metadata?.role || profile?.role || 'user';
-      setUserRole(role);
+      const role = authUser.user_metadata?.role || 'user';
+      setUserRole(role as 'admin' | 'user');
       
     } catch (error) {
       console.error('Error fetching user data:', error);
