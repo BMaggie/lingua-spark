@@ -10,6 +10,7 @@ import LanguageMiddleware from "@/components/enhanced/LanguageMiddleware";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AnimatedLoader from "@/components/AnimatedLoader";
 import { Suspense, lazy } from "react";
+import AppLayout from "@/components/AppLayout";
 
 // Lazy load all route components
 const Index = lazy(() => import("./pages/Index"));
@@ -39,8 +40,24 @@ const App = () => (
           <LanguageMiddleware>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
+                {/* Public routes without layout */}
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<AuthPage />} />
+                {/* Main app wrapped in AppLayout with responsive sidebar */}
+                <Route element={<AppLayout />}>
+                  <Route 
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <DashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/course" element={<CoursePage />} />
+                  <Route path="/achievements" element={<GamePage />} />
+                  <Route path="/community" element={<CommunityPage />} />
+                </Route>
+                {/* Admin retains its own layout */}
                 <Route 
                   path="/admin/*" 
                   element={
@@ -49,17 +66,6 @@ const App = () => (
                     </ProtectedRoute>
                   } 
                 />
-                <Route 
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/course" element={<CoursePage />} />
-                <Route path="/achievements" element={<GamePage />} />
-                <Route path="/community" element={<CommunityPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

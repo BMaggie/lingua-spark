@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLocalization } from '@/hooks/useLocalization';
 import LanguageSelectionFlow from './LanguageSelectionFlow';
 import AnimatedLoader from '@/components/AnimatedLoader';
@@ -21,6 +21,7 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { setLanguage } = useLocalization();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showLanguageFlow, setShowLanguageFlow] = useState(false);
   const [isCheckingLanguages, setIsCheckingLanguages] = useState(true);
   const [languagePreferences, setLanguagePreferences] = useState<LanguagePreferences | null>(null);
@@ -114,8 +115,11 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
     }
   };
 
-  // Show loading only when checking languages or authentication
-  if (isLoading || (isAuthenticated && isCheckingLanguages)) {
+  // Do not block public routes with loader
+  const isPublicRoute = location.pathname === '/' || location.pathname.startsWith('/auth');
+
+  // Only show loading for auth initialization, never for language checks
+  if (!isPublicRoute && isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
         <AnimatedLoader text="Setting up your experience..." />

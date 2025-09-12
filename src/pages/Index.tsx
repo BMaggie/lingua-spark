@@ -88,6 +88,13 @@ const Index = () => {
     }
   };
 
+  // Redirect authenticated users from root to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   // Show landing page for non-authenticated users
   if (!isAuthenticated) {
     return <LandingPage onLanguageSelect={() => {}} />;

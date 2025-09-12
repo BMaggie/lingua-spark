@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Menu, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import ProfileDropdown from './ProfileDropdown';
@@ -34,14 +34,6 @@ const MobileNav = () => {
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between py-4">
               <h2 className="text-lg font-semibold">Menu</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="p-1"
-              >
-                <X className="h-4 w-4" />
-              </Button>
             </div>
             
             <div className="flex-1 space-y-4">
@@ -96,9 +88,19 @@ const MobileNav = () => {
               ) : (
                 <div className="space-y-2">
                   <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      navigate('/auth?mode=login');
+                      setIsOpen(false);
+                    }}
+                  >
+                    Login
+                  </Button>
+                  <Button
                     className="w-full"
                     onClick={() => {
-                      navigate('/auth');
+                      navigate('/auth?mode=signup');
                       setIsOpen(false);
                     }}
                   >

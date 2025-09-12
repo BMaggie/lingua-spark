@@ -16,6 +16,7 @@ import {
   Trophy, 
   Star, 
   Target, 
+  Check,
   Clock, 
   LogOut,
   Settings,
