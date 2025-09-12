@@ -5,14 +5,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useLanguagePreferences } from '@/hooks/useLanguagePreferences';
 
+const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'de', name: 'German', flag: '🇩🇪' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+];
+
 interface BaseLanguageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLanguagesSet: () => void;
-  languages: { code: string; name: string; flag: string }[];
+  onLanguageSelect?: (language: string) => void;
+  onLanguagesSet?: () => void;
 }
 
-export default function BaseLanguageModal({ isOpen, onClose, onLanguagesSet, languages }: BaseLanguageModalProps) {
+export default function BaseLanguageModal({ isOpen, onClose, onLanguageSelect, onLanguagesSet }: BaseLanguageModalProps) {
   const [baseLanguage, setBaseLanguage] = useState("");
   const [spokenLanguages, setSpokenLanguages] = useState<string[]>([]);
   const [targetLanguage, setTargetLanguage] = useState("");
@@ -29,14 +42,20 @@ export default function BaseLanguageModal({ isOpen, onClose, onLanguagesSet, lan
 
   const handleContinue = async () => {
     if (baseLanguage && targetLanguage) {
-      const success = await updatePreferences({
-        base: baseLanguage,
-        target: targetLanguage,
-        spoken: spokenLanguages
-      });
+      if (onLanguagesSet) {
+        const success = await updatePreferences({
+          base: baseLanguage,
+          target: targetLanguage,
+          spoken: spokenLanguages
+        });
 
-      if (success) {
-        onLanguagesSet();
+        if (success) {
+          onLanguagesSet();
+          onClose();
+        }
+      } else if (onLanguageSelect) {
+        // Legacy mode for single language selection
+        onLanguageSelect(baseLanguage);
         onClose();
       }
     }
@@ -63,7 +82,7 @@ export default function BaseLanguageModal({ isOpen, onClose, onLanguagesSet, lan
                 <SelectValue placeholder="Select your native language" />
               </SelectTrigger>
               <SelectContent>
-                {languages.map((lang) => (
+                {LANGUAGES.map((lang) => (
                   <SelectItem key={lang.code} value={lang.code}>
                     <span className="mr-2">{lang.flag}</span>{lang.name}
                   </SelectItem>
@@ -76,7 +95,7 @@ export default function BaseLanguageModal({ isOpen, onClose, onLanguagesSet, lan
           <div className="space-y-2">
             <label className="text-sm font-medium">Other languages you speak (optional)</label>
             <div className="flex flex-wrap gap-2">
-              {languages.map((lang) => (
+              {LANGUAGES.map((lang) => (
                 <Badge
                   key={lang.code}
                   variant={spokenLanguages.includes(lang.code) ? "default" : "outline"}
@@ -97,7 +116,7 @@ export default function BaseLanguageModal({ isOpen, onClose, onLanguagesSet, lan
                 <SelectValue placeholder="Select a language to learn" />
               </SelectTrigger>
               <SelectContent>
-                {languages
+                {LANGUAGES
                   .filter(lang => lang.code !== baseLanguage)
                   .map((lang) => (
                     <SelectItem key={lang.code} value={lang.code}>
