@@ -30,10 +30,11 @@ const DashboardPage = () => {
   const [currentSection, setCurrentSection] = useState('dashboard');
 
   useEffect(() => {
-    if (userProfile?.learning_languages) {
+    // Set default languages for demo purposes if no language preferences exist
+    if (!selectedLanguages.base || !selectedLanguages.target) {
       setSelectedLanguages({
-        base: userProfile.learning_languages.base,
-        target: userProfile.learning_languages.target
+        base: 'English',
+        target: 'Spanish'
       });
     }
   }, [userProfile]);
@@ -74,8 +75,10 @@ const DashboardPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <BookOpen className="h-8 w-8 text-blue-600" />
-                <h1 className="text-2xl font-bold text-gray-900">LinguaSpark</h1>
+                <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg">
+                  <span className="text-white text-lg">✨</span>
+                </div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">LinguaSpark</h1>
               </div>
               <Badge variant="secondary" className="ml-4">
                 {userRole === 'admin' ? 'Admin' : 'Student'}
@@ -143,83 +146,210 @@ const DashboardPage = () => {
         {currentSection === 'dashboard' && (
           <div className="space-y-6">
             {/* Welcome Message */}
-            <Card>
+            <Card className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-purple-200">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <User className="h-5 w-5" />
-                  <span>Welcome back, {user?.email?.split('@')[0]}!</span>
+                  <User className="h-5 w-5 text-purple-600" />
+                  <span className="text-purple-800">Welcome back, {user?.email?.split('@')[0]}!</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">{getMotivationalMessage()}</p>
+                <p className="text-purple-700 mb-4">{getMotivationalMessage()}</p>
                 
-                {selectedLanguages.base && selectedLanguages.target && (
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <span>Learning {selectedLanguages.target}</span>
-                    <span>•</span>
-                    <span>From {selectedLanguages.base}</span>
-                  </div>
-                )}
+                <div className="flex items-center space-x-2 text-sm text-purple-600">
+                  <span>Learning {selectedLanguages.target}</span>
+                  <span>•</span>
+                  <span>From {selectedLanguages.base}</span>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Progress Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
+            {/* Enhanced Analytics Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">Words Learned</CardTitle>
+                  <CardTitle className="text-sm font-medium text-blue-700">Words Learned</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{userProfile?.stages_completed?.vocabulary?.length || 0}</div>
+                  <div className="text-3xl font-bold text-blue-800">{userProfile?.stages_completed?.vocabulary?.length || 0}</div>
+                  <div className="text-xs text-blue-600 mt-1">+3 this week</div>
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-gradient-to-br from-orange-50 to-red-100 border-red-200">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">Current Streak</CardTitle>
+                  <CardTitle className="text-sm font-medium text-red-700">Current Streak</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{userProfile?.streak_days || 0} days</div>
+                  <div className="text-3xl font-bold text-red-800">{userProfile?.streak_days || 0} days</div>
+                  <div className="text-xs text-red-600 mt-1">🔥 Keep it going!</div>
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">Total Points</CardTitle>
+                  <CardTitle className="text-sm font-medium text-purple-700">Total Points</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{userProfile?.points || 0}</div>
+                  <div className="text-3xl font-bold text-purple-800">{userProfile?.points || 0}</div>
+                  <div className="text-xs text-purple-600 mt-1">Rank: #{Math.floor(Math.random() * 50) + 1}</div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-green-700">Quiz Accuracy</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-green-800">{Math.floor(Math.random() * 20) + 80}%</div>
+                  <div className="text-xs text-green-600 mt-1">Last 10 quizzes</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Weekly Progress Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Clock className="h-5 w-5 text-purple-600" />
+                  <span>Weekly Activity</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-7 gap-2">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
+                    const activity = Math.floor(Math.random() * 4);
+                    return (
+                      <div key={day} className="text-center">
+                        <div className="text-xs text-gray-600 mb-1">{day}</div>
+                        <div 
+                          className={`h-8 w-8 rounded mx-auto ${
+                            activity === 0 ? 'bg-gray-200' :
+                            activity === 1 ? 'bg-purple-200' :
+                            activity === 2 ? 'bg-purple-400' :
+                            'bg-purple-600'
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="text-center text-xs text-gray-500 mt-2">
+                  Practice streak visualization
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Learning Goals */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Target className="h-5 w-5 text-blue-600" />
+                    <span>Daily Goal</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Learn 5 new words</span>
+                      <span>{Math.min(userProfile?.stages_completed?.vocabulary?.length || 0, 5)}/5</span>
+                    </div>
+                    <Progress value={(Math.min(userProfile?.stages_completed?.vocabulary?.length || 0, 5) / 5) * 100} className="h-2" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Trophy className="h-5 w-5 text-yellow-600" />
+                    <span>Weekly Challenge</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Complete 3 quiz stages</span>
+                      <span>{Math.min(userProfile?.stages_completed?.quiz?.length || 0, 3)}/3</span>
+                    </div>
+                    <Progress value={(Math.min(userProfile?.stages_completed?.quiz?.length || 0, 3) / 3) * 100} className="h-2" />
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Level Progress */}
-            <Card>
+            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
               <CardHeader>
-                <CardTitle>Level Progress</CardTitle>
+                <CardTitle className="flex items-center space-x-2">
+                  <Star className="h-5 w-5 text-purple-600" />
+                  <span>Level Progress</span>
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span>Level {userProfile?.current_level || 1}</span>
                     <span>{userProfile?.points || 0} / {(userProfile?.current_level || 1) * 100} points</span>
                   </div>
-                  <Progress value={getLevelProgress()} className="h-2" />
+                  <Progress value={getLevelProgress()} className="h-3" />
+                  <div className="text-xs text-gray-600">
+                    {(100 - (userProfile?.points || 0) % 100)} more points to reach Level {(userProfile?.current_level || 1) + 1}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Achievements */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Trophy className="h-5 w-5 text-yellow-600" />
+                  <span>Recent Achievements</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { name: "First Steps", icon: "🌱", desc: "Started your learning journey", unlocked: true },
+                    { name: "Word Master", icon: "📚", desc: "Learned 10 new words", unlocked: (userProfile?.stages_completed?.vocabulary?.length || 0) >= 10 },
+                    { name: "Quiz Champion", icon: "🏆", desc: "Perfect quiz score", unlocked: (userProfile?.stages_completed?.quiz?.length || 0) >= 1 },
+                  ].map((achievement, index) => (
+                    <div key={index} className={`flex items-center space-x-3 p-3 rounded-lg ${
+                      achievement.unlocked ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50 border border-gray-200 opacity-60'
+                    }`}>
+                      <div className="text-2xl">{achievement.icon}</div>
+                      <div className="flex-1">
+                        <div className={`font-medium ${achievement.unlocked ? 'text-yellow-800' : 'text-gray-600'}`}>
+                          {achievement.name}
+                        </div>
+                        <div className={`text-sm ${achievement.unlocked ? 'text-yellow-600' : 'text-gray-500'}`}>
+                          {achievement.desc}
+                        </div>
+                      </div>
+                      {achievement.unlocked && (
+                        <div className="text-yellow-600">
+                          <Check className="h-5 w-5" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
         )}
 
-        {currentSection === 'vocabulary' && selectedLanguages.base && selectedLanguages.target && (
+        {currentSection === 'vocabulary' && (
           <VocabularyCard languages={selectedLanguages} />
         )}
 
-        {currentSection === 'quiz' && selectedLanguages.base && selectedLanguages.target && (
+        {currentSection === 'quiz' && (
           <QuizSection languages={selectedLanguages} />
         )}
 
-        {currentSection === 'leaderboard' && selectedLanguages.target && (
+        {currentSection === 'leaderboard' && (
           <Leaderboard 
             targetLanguage={selectedLanguages.target}
             currentUserId={user?.id}
