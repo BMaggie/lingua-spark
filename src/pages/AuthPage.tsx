@@ -126,16 +126,16 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <button
-        aria-label="Back to landing"
-        onClick={() => navigate('/')}
-        className="absolute left-4 top-4 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </button>
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+      <Card className="w-full max-w-md relative">
+        <button
+          aria-label="Back to landing"
+          onClick={() => navigate('/')}
+          className="absolute left-4 top-4 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
+        <CardHeader className="text-center pt-12">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Welcome to LinguaSpark
           </CardTitle>
