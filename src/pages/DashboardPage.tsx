@@ -34,11 +34,19 @@ const DashboardPage = () => {
     // Set default languages for demo purposes if no language preferences exist
     if (!selectedLanguages.base || !selectedLanguages.target) {
       setSelectedLanguages({
-        base: 'English',
-        target: 'Spanish'
+        base: 'English', // or 'Hausa', 'Fulani', 'Fulfulde'
+        target: 'Hausa' // or 'English', 'Fulani', 'Fulfulde'
       });
     }
   }, [userProfile]);
+
+  if (!user) {
+  // If user is not authenticated, redirect to login page
+  useEffect(() => {
+    navigate('/');
+  }, [navigate]);
+  return null;
+}
 
   const handleLogout = async () => {
     await signOut();
