@@ -68,9 +68,9 @@ const CoursePage = () => {
       title: 'Common Questions',
       type: 'flashcard',
       content: {
-        word: 'Ina lafiya?',
+        word: 'ya kake/keke?',
         translation: 'How are you?',
-        example: 'Ina lafiya? Lafiya lau.' // How are you? I am fine.
+        example: 'ya kake/keke?.' // How are you? I am fine.
       },
       completed: false,
       xp: 10
@@ -158,7 +158,7 @@ const CoursePage = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Spanish Course</h1>
+            <h1 className="text-3xl font-bold text-foreground">Hausa Course</h1>
             <p className="text-muted-foreground">Continue your learning journey</p>
           </div>
           <Badge variant="secondary" className="text-lg px-4 py-2">
