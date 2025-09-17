@@ -40,13 +40,11 @@ const DashboardPage = () => {
     }
   }, [userProfile]);
 
-  if (!user) {
-  // If user is not authenticated, redirect to login page
   useEffect(() => {
-    navigate('/');
-  }, [navigate]);
-  return null;
-}
+    if (!user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     await signOut();

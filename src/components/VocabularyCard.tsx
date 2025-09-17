@@ -43,9 +43,16 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
                 id: 1,
                 level: 1,
                 words: [
-                  { word: 'Hello', translation: 'Hola', difficulty: 'easy' as const },
-                  { word: 'Goodbye', translation: 'Adiós', difficulty: 'easy' as const },
-                  { word: 'Thank you', translation: 'Gracias', difficulty: 'easy' as const }
+                  { word: 'Sannu', translation: 'Hello', difficulty: 'easy' },
+                  { word: 'Nagode', translation: 'Thank you', difficulty: 'easy' },
+                  { word: 'Ina kwana', translation: 'Good morning', difficulty: 'easy' },
+                  { word: 'Ina lafiya?', translation: 'How are you?', difficulty: 'easy' },
+                  { word: 'Gida', translation: 'Home', difficulty: 'easy' },
+                  { word: 'Abinci', translation: 'Food', difficulty: 'easy' },
+                  { word: 'Ruwa', translation: 'Water', difficulty: 'easy' },
+                  { word: 'Kudi', translation: 'Money', difficulty: 'easy' },
+                  { word: 'Makaranta', translation: 'School', difficulty: 'easy' },
+                  { word: 'Kasuwa', translation: 'Market', difficulty: 'easy' }
                 ]
               }
             ];
