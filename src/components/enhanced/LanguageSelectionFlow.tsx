@@ -22,28 +22,16 @@ interface LanguageSelectionFlowProps {
 
 const SPOKEN_LANGUAGES: Language[] = [
   { code: 'en', name: 'English', flag: '🇺🇸', speakers: '1.5B speakers' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', speakers: '500M speakers' },
-  { code: 'zh', name: '中文', flag: '🇨🇳', speakers: '1.1B speakers' },
-  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳', speakers: '600M speakers' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦', speakers: '400M speakers' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷', speakers: '260M speakers' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', speakers: '280M speakers' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪', speakers: '100M speakers' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵', speakers: '125M speakers' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺', speakers: '260M speakers' }
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '50M speakers' },
+  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '20M speakers' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '15M speakers' }
 ];
 
 const LEARNING_LANGUAGES: Language[] = [
-  { code: 'es', name: 'Español', flag: '🇪🇸', speakers: '500M speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', speakers: '280M speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪', speakers: '100M speakers', difficulty: 'Intermediate' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹', speakers: '65M speakers', difficulty: 'Beginner' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷', speakers: '260M speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'ja', name: '日本語', flag: '🇯🇵', speakers: '125M speakers', difficulty: 'Advanced' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷', speakers: '77M speakers', difficulty: 'Advanced' },
-  { code: 'zh', name: '中文', flag: '🇨🇳', speakers: '1.1B speakers', difficulty: 'Advanced' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺', speakers: '260M speakers', difficulty: 'Intermediate' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦', speakers: '400M speakers', difficulty: 'Advanced' }
+  { code: 'en', name: 'English', flag: '🇺🇸', speakers: '1.5B speakers', difficulty: 'Beginner', isPopular: true },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '50M speakers', difficulty: 'Intermediate' },
+  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '20M speakers', difficulty: 'Intermediate' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '15M speakers', difficulty: 'Intermediate' }
 ];
 
 const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowProps) => {

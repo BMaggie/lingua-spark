@@ -16,6 +16,16 @@ const LANGUAGES = [
   { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
   { code: 'ko', name: 'Korean', flag: '🇰🇷' },
   { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  // Nigerian languages
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
+  { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
+  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' },
+  { code: 'ti', name: 'Tiv', flag: '🇳🇬' },
+  { code: 'kr', name: 'Kanuri', flag: '🇳🇬' },
+  { code: 'ib', name: 'Ibibio', flag: '🇳🇬' },
+  { code: 'ee', name: 'Edo', flag: '🇳🇬' },
+  { code: 'urh', name: 'Urhobo', flag: '🇳🇬' }
 ];
 
 interface BaseLanguageModalProps {

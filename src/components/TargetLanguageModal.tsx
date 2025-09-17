@@ -15,17 +15,9 @@ const TargetLanguageModal = ({ isOpen, onClose, onLanguageSelect, baseLanguage }
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸', difficulty: 'Easy', speakers: '1.5B+ speakers' },
-    { code: 'es', name: 'Spanish', flag: '🇪🇸', difficulty: 'Easy', speakers: '500M+ speakers' },
-    { code: 'fr', name: 'French', flag: '🇫🇷', difficulty: 'Medium', speakers: '280M+ speakers' },
-    { code: 'de', name: 'German', flag: '🇩🇪', difficulty: 'Hard', speakers: '100M+ speakers' },
-    { code: 'pt', name: 'Portuguese', flag: '🇵🇹', difficulty: 'Medium', speakers: '260M+ speakers' },
-    { code: 'it', name: 'Italian', flag: '🇮🇹', difficulty: 'Medium', speakers: '65M+ speakers' },
-    { code: 'zh', name: 'Chinese', flag: '🇨🇳', difficulty: 'Hard', speakers: '1.1B+ speakers' },
-    { code: 'ja', name: 'Japanese', flag: '🇯🇵', difficulty: 'Hard', speakers: '125M+ speakers' },
-    { code: 'ko', name: 'Korean', flag: '🇰🇷', difficulty: 'Hard', speakers: '77M+ speakers' },
-    { code: 'ar', name: 'Arabic', flag: '🇸🇦', difficulty: 'Hard', speakers: '400M+ speakers' },
-    { code: 'hi', name: 'Hindi', flag: '🇮🇳', difficulty: 'Medium', speakers: '600M+ speakers' },
-    { code: 'ru', name: 'Russian', flag: '🇷🇺', difficulty: 'Hard', speakers: '260M+ speakers' }
+    { code: 'ha', name: 'Hausa', flag: '🇳🇬', difficulty: 'Medium', speakers: '50M+ speakers' },
+    { code: 'fu', name: 'Fulani', flag: '🇳🇬', difficulty: 'Medium', speakers: '20M+ speakers' },
+    { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', difficulty: 'Medium', speakers: '15M+ speakers' }
   ];
 
   // Filter out the base language

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,13 +13,9 @@ const LanguageSelector = ({ onLanguageSelect }: LanguageSelectorProps) => {
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-    { code: 'fr', name: 'French', flag: '🇫🇷' },
-    { code: 'de', name: 'German', flag: '🇩🇪' },
     { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-    { code: 'it', name: 'Italian', flag: '🇮🇹' },
-    { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
-    { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+    { code: 'fu', name: 'Fulani', flag: '🇳🇬' },
+    { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' }
   ];
 
   const handleStartLearning = () => {
