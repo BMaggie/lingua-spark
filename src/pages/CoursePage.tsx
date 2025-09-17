@@ -44,42 +44,67 @@ const CoursePage = () => {
       title: 'Basic Greetings',
       type: 'flashcard',
       content: {
-        word: 'Hola',
+        word: 'Sannu',
         translation: 'Hello',
-        pronunciation: '/ˈo.la/',
-        example: 'Hola, ¿cómo estás?'
+        example: 'Sannu! Yaya kake?' // Hello! How are you?
       },
       completed: false,
       xp: 10
     },
     {
       id: '2',
-      title: 'Common Phrases',
+      title: 'Expressing Thanks',
+      type: 'flashcard',
+      content: {
+        word: 'Nagode',
+        translation: 'Thank you',
+        example: 'Nagode da taimako.' // Thank you for your help.
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '3',
+      title: 'Common Questions',
+      type: 'flashcard',
+      content: {
+        word: 'Ina lafiya?',
+        translation: 'How are you?',
+        example: 'Ina lafiya? Lafiya lau.' // How are you? I am fine.
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '4',
+      title: 'Hausa Basics Quiz',
       type: 'quiz',
       content: {
         questions: [
           {
-            question: 'How do you say "Thank you" in Spanish?',
-            options: ['Hola', 'Gracias', 'Adiós', 'Por favor'],
-            correct: 1
+            question: 'What does "Sannu" mean in English?',
+            options: ['Hello', 'Thank you', 'Goodbye', 'Water'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "Thank you" in Hausa?',
+            options: ['Nagode', 'Gida', 'Ruwa', 'Kudi'],
+            correct: 0
+          },
+          {
+            question: 'What is the Hausa word for "Water"?',
+            options: ['Ruwa', 'Abinci', 'Kasuwa', 'Makaranta'],
+            correct: 0
+          },
+          {
+            question: 'Translate "School" to Hausa.',
+            options: ['Makaranta', 'Kasuwa', 'Gida', 'Abinci'],
+            correct: 0
           }
         ]
       },
       completed: false,
-      xp: 15
-    },
-    {
-      id: '3',
-      title: 'Numbers 1-10',
-      type: 'flashcard',
-      content: {
-        word: 'Uno',
-        translation: 'One',
-        pronunciation: '/ˈu.no/',
-        example: 'Uno, dos, tres...'
-      },
-      completed: false,
-      xp: 10
+      xp: 20
     }
   ];
 
