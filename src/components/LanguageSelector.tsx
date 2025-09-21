@@ -9,18 +9,14 @@ interface LanguageSelectorProps {
 }
 
 const LanguageSelector = ({ onLanguageSelect }: LanguageSelectorProps) => {
-  const [baseLanguage, setBaseLanguage] = useState('');
+  const [baseLanguage, setBaseLanguage] = useState('en');
   const [targetLanguage, setTargetLanguage] = useState('');
 
   const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-    { code: 'fr', name: 'French', flag: '🇫🇷' },
-    { code: 'de', name: 'German', flag: '🇩🇪' },
-    { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-    { code: 'it', name: 'Italian', flag: '🇮🇹' },
-    { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
-    { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
+  { code: 'fu', name: 'Fulani', flag: '🇳🇬' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' }
   ];
 
   const handleStartLearning = () => {
