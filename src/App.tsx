@@ -19,8 +19,12 @@ const AdminPage = lazy(() => import("./pages/AdminPage"));
 const CoursePage = lazy(() => import("./pages/CoursePage"));
 const GamePage = lazy(() => import("./pages/GamePage"));
 const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+
 const NotFound = lazy(() => import("./pages/NotFound"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const VocabularyQuiz = lazy(() => import("./components/VocabularyQuiz"));
+const Leaderboard = lazy(() => import("./components/Leaderboard"));
+const VocabularyCard = lazy(() => import("./components/VocabularyCard"));
 
 const queryClient = new QueryClient();
 
@@ -54,6 +58,9 @@ const App = () => (
                     }
                   />
                   <Route path="/course" element={<CoursePage />} />
+                  <Route path="/quiz" element={<VocabularyQuiz languages={{ base: 'English', target: 'Hausa' }} />} />
+                  <Route path="/leaderboard" element={<Leaderboard targetLanguage="Hausa" />} />
+                  <Route path="/vocabulary" element={<VocabularyCard languages={{ base: 'English', target: 'Hausa' }} />} />
                   <Route path="/achievements" element={<GamePage />} />
                   <Route path="/community" element={<CommunityPage />} />
                 </Route>

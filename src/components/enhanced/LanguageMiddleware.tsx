@@ -53,17 +53,8 @@ const LanguageMiddleware = ({ children }: LanguageMiddlewareProps) => {
           setLanguage(preferences.primary_spoken_language);
         }
         
-        // Check if user has both spoken and learning languages
-        if (
-          preferences.spoken_languages?.length > 0 && 
-          preferences.learning_languages?.length > 0
-        ) {
-          setIsCheckingLanguages(false);
-        } else {
-          // User has incomplete language setup
-          setShowLanguageFlow(true);
-          setIsCheckingLanguages(false);
-        }
+        // Only show language selection if user has never set preferences
+        setIsCheckingLanguages(false);
       } else {
         // New user - show language selection flow
         setShowLanguageFlow(true);

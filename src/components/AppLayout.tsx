@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { BookOpen, Brain, Home, LayoutDashboard, Trophy, Users } from "lucide-react";
+import { BookOpen, Brain, Home, LayoutDashboard, Trophy, Users, ListChecks, ListOrdered, Award } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -26,11 +26,14 @@ const AppLayout = () => {
   const { user, userRole, signOut } = useAuth();
 
   const links = [
-    { to: "/", label: "Home", icon: Home },
+    // { to: "/", label: "Home", icon: Home },
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/course", label: "Lessons", icon: BookOpen },
+    { to: "/quiz", label: "Quiz", icon: ListChecks },
+    { to: "/leaderboard", label: "Leaderboard", icon: Award },
+    { to: "/vocabulary", label: "Vocabulary", icon: ListOrdered },
     { to: "/achievements", label: "Achievements", icon: Trophy },
-    { to: "/community", label: "Community", icon: Users },
+    // { to: "/community", label: "Community", icon: Users },
   ];
 
   return (

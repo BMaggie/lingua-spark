@@ -25,21 +25,161 @@ const VocabularyQuiz = ({ languages }: QuizSectionProps) => {
     {
       id: 1,
       words: [
-        {
-          word: 'Hello',
-          translation: 'Sannu',
-          options: ['Sannu', 'Barka', 'Ina', 'Lafiya']
-        },
-        {
-          word: 'Water',
-          translation: 'Ruwa',
-          options: ['Ruwa', 'Gida', 'Abinci', 'Daki']
-        },
-        {
-          word: 'Food',
-          translation: 'Abinci',
-          options: ['Abinci', 'Ruwa', 'Gida', 'Lafiya']
-        }
+        { word: 'Hello', translation: 'Sannu', options: ['Sannu', 'Barka', 'Ina', 'Lafiya'] },
+        { word: 'Water', translation: 'Ruwa', options: ['Ruwa', 'Gida', 'Abinci', 'Daki'] },
+        { word: 'Food', translation: 'Abinci', options: ['Abinci', 'Ruwa', 'Gida', 'Lafiya'] }
+      ]
+    },
+    {
+      id: 2,
+      words: [
+        { word: 'House', translation: 'Gida', options: ['Gida', 'Daki', 'Abinci', 'Ruwa'] },
+        { word: 'Room', translation: 'Daki', options: ['Daki', 'Gida', 'Abinci', 'Lafiya'] },
+        { word: 'Thank you', translation: 'Nagode', options: ['Nagode', 'Sannu', 'Barka', 'Ruwa'] }
+      ]
+    },
+    {
+      id: 3,
+      words: [
+        { word: 'Goodbye', translation: 'Sai anjima', options: ['Sai anjima', 'Nagode', 'Sannu', 'Barka'] },
+        { word: 'Please', translation: 'Don Allah', options: ['Don Allah', 'Nagode', 'Barka', 'Daki'] },
+        { word: 'Morning', translation: 'Ina kwana', options: ['Ina kwana', 'Barka da yamma', 'Nagode', 'Lafiya'] }
+      ]
+    },
+    {
+      id: 4,
+      words: [
+        { word: 'Father', translation: 'Uba', options: ['Uba', 'Mahaifiya', 'Yaro', 'Gida'] },
+        { word: 'Mother', translation: 'Uwa', options: ['Uwa', 'Uba', 'Yarinya', 'Abinci'] },
+        { word: 'Child', translation: 'Yaro', options: ['Yaro', 'Uba', 'Uwa', 'Daki'] }
+      ]
+    },
+    {
+      id: 5,
+      words: [
+        { word: 'Book', translation: 'Littafi', options: ['Littafi', 'Gida', 'Daki', 'Ruwa'] },
+        { word: 'Pen', translation: 'Alkalam', options: ['Alkalam', 'Littafi', 'Abinci', 'Nagode'] },
+        { word: 'School', translation: 'Makaranta', options: ['Makaranta', 'Gida', 'Daki', 'Lafiya'] }
+      ]
+    },
+    {
+      id: 6,
+      words: [
+        { word: 'Car', translation: 'Mota', options: ['Mota', 'Keke', 'Gida', 'Daki'] },
+        { word: 'Bicycle', translation: 'Keke', options: ['Keke', 'Mota', 'Abinci', 'Nagode'] },
+        { word: 'Market', translation: 'Kasuwa', options: ['Kasuwa', 'Gida', 'Daki', 'Lafiya'] }
+      ]
+    },
+    {
+      id: 7,
+      words: [
+        { word: 'Rice', translation: 'Shinkafa', options: ['Shinkafa', 'Abinci', 'Ruwa', 'Gida'] },
+        { word: 'Meat', translation: 'Nama', options: ['Nama', 'Shinkafa', 'Abinci', 'Nagode'] },
+        { word: 'Soup', translation: 'Miyan', options: ['Miyan', 'Nama', 'Shinkafa', 'Lafiya'] }
+      ]
+    },
+    {
+      id: 8,
+      words: [
+        { word: 'Dog', translation: 'Kare', options: ['Kare', 'Mage', 'Akuya', 'Shanu'] },
+        { word: 'Cat', translation: 'Mage', options: ['Mage', 'Kare', 'Akuya', 'Shanu'] },
+        { word: 'Goat', translation: 'Akuya', options: ['Akuya', 'Kare', 'Mage', 'Shanu'] }
+      ]
+    },
+    {
+      id: 9,
+      words: [
+        { word: 'Sun', translation: 'Rana', options: ['Rana', 'Ruwa', 'Dare', 'Gida'] },
+        { word: 'Rain', translation: 'Ruwa', options: ['Ruwa', 'Rana', 'Dare', 'Gida'] },
+        { word: 'Night', translation: 'Dare', options: ['Dare', 'Rana', 'Ruwa', 'Gida'] }
+      ]
+    },
+    {
+      id: 10,
+      words: [
+        { word: 'One', translation: 'Daya', options: ['Daya', 'Biyu', 'Uku', 'Hudu'] },
+        { word: 'Two', translation: 'Biyu', options: ['Biyu', 'Daya', 'Uku', 'Hudu'] },
+        { word: 'Three', translation: 'Uku', options: ['Uku', 'Daya', 'Biyu', 'Hudu'] }
+      ]
+    },
+    {
+      id: 11,
+      words: [
+        { word: 'Four', translation: 'Hudu', options: ['Hudu', 'Biyar', 'Shida', 'Bakwai'] },
+        { word: 'Five', translation: 'Biyar', options: ['Biyar', 'Hudu', 'Shida', 'Bakwai'] },
+        { word: 'Six', translation: 'Shida', options: ['Shida', 'Biyar', 'Hudu', 'Bakwai'] }
+      ]
+    },
+    {
+      id: 12,
+      words: [
+        { word: 'Seven', translation: 'Bakwai', options: ['Bakwai', 'Takwas', 'Tara', 'Goma'] },
+        { word: 'Eight', translation: 'Takwas', options: ['Takwas', 'Bakwai', 'Tara', 'Goma'] },
+        { word: 'Nine', translation: 'Tara', options: ['Tara', 'Bakwai', 'Takwas', 'Goma'] }
+      ]
+    },
+    {
+      id: 13,
+      words: [
+        { word: 'Ten', translation: 'Goma', options: ['Goma', 'Tara', 'Takwas', 'Bakwai'] },
+        { word: 'Friend', translation: 'Aboki', options: ['Aboki', 'Abokiya', 'Yaro', 'Yarinya'] },
+        { word: 'Girl', translation: 'Yarinya', options: ['Yarinya', 'Yaro', 'Aboki', 'Abokiya'] }
+      ]
+    },
+    {
+      id: 14,
+      words: [
+        { word: 'Boy', translation: 'Yaro', options: ['Yaro', 'Yarinya', 'Aboki', 'Abokiya'] },
+        { word: 'Teacher', translation: 'Malam', options: ['Malam', 'Dalibi', 'Aboki', 'Yaro'] },
+        { word: 'Student', translation: 'Dalibi', options: ['Dalibi', 'Malam', 'Aboki', 'Yaro'] }
+      ]
+    },
+    {
+      id: 15,
+      words: [
+        { word: 'Market', translation: 'Kasuwanci', options: ['Kasuwanci', 'Kasuwa', 'Gida', 'Daki'] },
+        { word: 'Shop', translation: 'Shago', options: ['Shago', 'Kasuwanci', 'Gida', 'Daki'] },
+        { word: 'Money', translation: 'Kudi', options: ['Kudi', 'Shago', 'Kasuwanci', 'Gida'] }
+      ]
+    },
+    {
+      id: 16,
+      words: [
+        { word: 'Chair', translation: 'Kujera', options: ['Kujera', 'Tebur', 'Gida', 'Daki'] },
+        { word: 'Table', translation: 'Tebur', options: ['Tebur', 'Kujera', 'Gida', 'Daki'] },
+        { word: 'Window', translation: 'Tagar', options: ['Tagar', 'Kujera', 'Tebur', 'Daki'] }
+      ]
+    },
+    {
+      id: 17,
+      words: [
+        { word: 'Door', translation: 'Kofa', options: ['Kofa', 'Tagar', 'Kujera', 'Tebur'] },
+        { word: 'Wall', translation: 'Bango', options: ['Bango', 'Kofa', 'Tagar', 'Kujera'] },
+        { word: 'Floor', translation: 'Kasa', options: ['Kasa', 'Bango', 'Kofa', 'Tagar'] }
+      ]
+    },
+    {
+      id: 18,
+      words: [
+        { word: 'Light', translation: 'Hasken', options: ['Hasken', 'Kasa', 'Bango', 'Kofa'] },
+        { word: 'Dark', translation: 'Duhu', options: ['Duhu', 'Hasken', 'Kasa', 'Bango'] },
+        { word: 'Fire', translation: 'Wuta', options: ['Wuta', 'Duhu', 'Hasken', 'Kasa'] }
+      ]
+    },
+    {
+      id: 19,
+      words: [
+        { word: 'Mountain', translation: 'Dutse', options: ['Dutse', 'Kogi', 'Gona', 'Daji'] },
+        { word: 'River', translation: 'Kogi', options: ['Kogi', 'Dutse', 'Gona', 'Daji'] },
+        { word: 'Farm', translation: 'Gona', options: ['Gona', 'Kogi', 'Dutse', 'Daji'] }
+      ]
+    },
+    {
+      id: 20,
+      words: [
+        { word: 'Forest', translation: 'Daji', options: ['Daji', 'Gona', 'Kogi', 'Dutse'] },
+        { word: 'Road', translation: 'Hanya', options: ['Hanya', 'Daji', 'Gona', 'Kogi'] },
+        { word: 'City', translation: 'Birni', options: ['Birni', 'Hanya', 'Daji', 'Gona'] }
       ]
     }
   ]);

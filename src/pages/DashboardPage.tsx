@@ -80,7 +80,7 @@ const DashboardPage = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg">
-                  <span className="text-white text-lg">✨</span>
+                  <span className="text-white text-lg"></span>
                 </div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">NorthLing</h1>
               </div>
@@ -106,7 +106,7 @@ const DashboardPage = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b">
+      {/* <nav className="bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="flex space-x-8">
             <Button
@@ -143,7 +143,7 @@ const DashboardPage = () => {
             </Button>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">

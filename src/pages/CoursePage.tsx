@@ -100,6 +100,267 @@ const CoursePage = () => {
       },
       completed: false,
       xp: 10
+    },
+    {
+      id: '4',
+      title: 'Colors',
+      type: 'flashcard',
+      content: {
+        word: 'Ja',
+        translation: 'Red',
+        pronunciation: '/ja/',
+        example: 'Fentin nan ja ne.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '5',
+      title: 'Common Phrases',
+      type: 'quiz',
+      content: {
+        questions: [
+          {
+            question: 'How do you say "Excuse me" in Hausa?',
+            options: ['Yi hakuri', 'Nagode', 'Ina kwana', 'Barka da yamma'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "Yes" in Hausa?',
+            options: ['A’a', 'Eh', 'Nagode', 'Don Allah'],
+            correct: 1
+          }
+        ]
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '6',
+      title: 'Family',
+      type: 'flashcard',
+      content: {
+        word: 'Uba',
+        translation: 'Father',
+        pronunciation: '/u.ba/',
+        example: 'Uba na yana da kirki.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '7',
+      title: 'Food',
+      type: 'flashcard',
+      content: {
+        word: 'Shinkafa',
+        translation: 'Rice',
+        pronunciation: '/ʃin.ka.fa/',
+        example: 'Ina son shinkafa.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '8',
+      title: 'Days of the Week',
+      type: 'quiz',
+      content: {
+        questions: [
+          {
+            question: 'What is "Monday" in Hausa?',
+            options: ['Litinin', 'Talata', 'Laraba', 'Juma’a'],
+            correct: 0
+          },
+          {
+            question: 'What is "Friday" in Hausa?',
+            options: ['Asabar', 'Juma’a', 'Litinin', 'Laraba'],
+            correct: 1
+          }
+        ]
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '9',
+      title: 'Weather',
+      type: 'flashcard',
+      content: {
+        word: 'Ruwa',
+        translation: 'Rain',
+        pronunciation: '/ru.wa/',
+        example: 'Ruwa yana sauka.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '10',
+      title: 'Numbers 11-20',
+      type: 'flashcard',
+      content: {
+        word: 'Goma sha daya',
+        translation: 'Eleven',
+        pronunciation: '/go.ma ʃa da.ja/',
+        example: 'Goma sha daya, goma sha biyu...'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '11',
+      title: 'Professions',
+      type: 'flashcard',
+      content: {
+        word: 'Likita',
+        translation: 'Doctor',
+        pronunciation: '/li.ki.ta/',
+        example: 'Likita yana asibiti.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '12',
+      title: 'School',
+      type: 'flashcard',
+      content: {
+        word: 'Makaranta',
+        translation: 'School',
+        pronunciation: '/ma.ka.ran.ta/',
+        example: 'Yara suna makaranta.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '13',
+      title: 'Animals',
+      type: 'quiz',
+      content: {
+        questions: [
+          {
+            question: 'What is "Dog" in Hausa?',
+            options: ['Kare', 'Mage', 'Akuya', 'Shanu'],
+            correct: 0
+          },
+          {
+            question: 'What is "Cow" in Hausa?',
+            options: ['Kare', 'Mage', 'Akuya', 'Shanu'],
+            correct: 3
+          }
+        ]
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '14',
+      title: 'Body Parts',
+      type: 'flashcard',
+      content: {
+        word: 'Ido',
+        translation: 'Eye',
+        pronunciation: '/i.do/',
+        example: 'Ido biyu.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '15',
+      title: 'Transportation',
+      type: 'flashcard',
+      content: {
+        word: 'Mota',
+        translation: 'Car',
+        pronunciation: '/mo.ta/',
+        example: 'Mota tana tafiya.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '16',
+      title: 'Fruits',
+      type: 'flashcard',
+      content: {
+        word: 'Ayaba',
+        translation: 'Banana',
+        pronunciation: '/a.ja.ba/',
+        example: 'Ayaba tana da dadi.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '17',
+      title: 'Clothing',
+      type: 'flashcard',
+      content: {
+        word: 'Riga',
+        translation: 'Shirt',
+        pronunciation: '/ri.ga/',
+        example: 'Riga mai kyau.'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '18',
+      title: 'Time',
+      type: 'quiz',
+      content: {
+        questions: [
+          {
+            question: 'What is "Morning" in Hausa?',
+            options: ['Yamma', 'Asuba', 'Maraice', 'Dare'],
+            correct: 1
+          },
+          {
+            question: 'What is "Night" in Hausa?',
+            options: ['Dare', 'Asuba', 'Yamma', 'Maraice'],
+            correct: 0
+          }
+        ]
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '19',
+      title: 'Greetings 2',
+      type: 'flashcard',
+      content: {
+        word: 'Barka da yamma',
+        translation: 'Good evening',
+        pronunciation: '/bar.ka da yam.ma/',
+        example: 'Barka da yamma, ya hanya?'
+      },
+      completed: false,
+      xp: 10
+    },
+    {
+      id: '20',
+      title: 'Simple Conversation',
+      type: 'quiz',
+      content: {
+        questions: [
+          {
+            question: 'How do you say "What is your name?" in Hausa?',
+            options: ['Menene sunanka?', 'Ina kwana?', 'Nagode', 'Barka da yamma'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "I am fine" in Hausa?',
+            options: ['Lafiya lau', 'Nagode', 'Sannu', 'Don Allah'],
+            correct: 0
+          }
+        ]
+      },
+      completed: false,
+      xp: 10
     }
   ];
 

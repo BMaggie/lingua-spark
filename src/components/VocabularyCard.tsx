@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Headphones, Check } from 'lucide-react';
 import StagesSelector from './StagesSelector';
-import { supabase } from "@/integrations/supabase/client";
-import type { VocabularyStage } from "@/integrations/supabase/types";
+// import { supabase } from "@/integrations/supabase/client";
+// import type { VocabularyStage } from "@/integrations/supabase/types";
 import { Badge } from "@/components/ui/badge";
 import { useUserProgress } from "@/hooks/useUserProgress";
 
@@ -17,63 +17,61 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [knownWords, setKnownWords] = useState<number[]>([]);
-  const [currentStage, setCurrentStage] = useState<VocabularyStage | null>(null);
-  const [stages, setStages] = useState<VocabularyStage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [currentStage, setCurrentStage] = useState<any>(null);
+  const [stages, setStages] = useState<any[]>([{
+    id: 1,
+    level: 1,
+    words: [
+      { word: 'Hello', translation: 'Sannu', difficulty: 'easy' },
+      { word: 'Goodbye', translation: 'Sai anjima', difficulty: 'easy' },
+      { word: 'Thank you', translation: 'Nagode', difficulty: 'easy' }
+    ]
+  },
+  {
+    id: 2,
+    level: 2,
+    words: [
+      { word: 'Water', translation: 'Ruwa', difficulty: 'easy' },
+      { word: 'Food', translation: 'Abinci', difficulty: 'easy' },
+      { word: 'Rice', translation: 'Shinkafa', difficulty: 'easy' }
+    ]
+  },
+  {
+    id: 3,
+    level: 3,
+    words: [
+      { word: 'House', translation: 'Gida', difficulty: 'easy' },
+      { word: 'Room', translation: 'Daki', difficulty: 'easy' },
+      { word: 'School', translation: 'Makaranta', difficulty: 'easy' }
+    ]
+  },
+  {
+    id: 4,
+    level: 4,
+    words: [
+      { word: 'Book', translation: 'Littafi', difficulty: 'easy' },
+      { word: 'Pen', translation: 'Alkalam', difficulty: 'easy' },
+      { word: 'Teacher', translation: 'Malam', difficulty: 'easy' }
+    ]
+  },
+  {
+    id: 5,
+    level: 5,
+    words: [
+      { word: 'Car', translation: 'Mota', difficulty: 'easy' },
+      { word: 'Bicycle', translation: 'Keke', difficulty: 'easy' },
+      { word: 'Market', translation: 'Kasuwa', difficulty: 'easy' }
+    ]
+  }]);
+  const [loading, setLoading] = useState(false);
   const [stageProgress, setStageProgress] = useState<Record<number, number>>({});
   const { userProfile, updateProgress, loading: userLoading } = useUserProgress();
   const { toast } = useToast();
   const completedStages = userProfile?.stages_completed?.vocabulary || [];
 
   useEffect(() => {
-    const fetchStages = async () => {
-      try {
-        const { data: vocabStages, error } = await supabase
-          .from('vocabulary_stages')
-          .select('*')
-          .order('level', { ascending: true });
-
-        if (error) {
-          console.error('Database error:', error);
-          // If table doesn't exist, create some sample data
-          if (error.message.includes('relation "vocabulary_stages" does not exist')) {
-            console.log('Creating sample vocabulary stages...');
-            const sampleStages: VocabularyStage[] = [
-              {
-                id: 1,
-                level: 1,
-                words: [
-                  { word: 'Hello', translation: 'Hola', difficulty: 'easy' as const },
-                  { word: 'Goodbye', translation: 'Adiós', difficulty: 'easy' as const },
-                  { word: 'Thank you', translation: 'Gracias', difficulty: 'easy' as const }
-                ]
-              }
-            ];
-            setStages(sampleStages);
-            setCurrentStage(sampleStages[0]);
-          } else {
-            throw error;
-          }
-        } else {
-          setStages(vocabStages || []);
-          if (vocabStages && vocabStages.length > 0) {
-            setCurrentStage(vocabStages[0]);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching vocabulary stages:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load vocabulary stages. Please try again later.",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStages();
-  }, [toast]);
+    setCurrentStage(stages[0]);
+  }, [stages]);
 
   const nextCard = () => {
     if (!currentStage) return;
