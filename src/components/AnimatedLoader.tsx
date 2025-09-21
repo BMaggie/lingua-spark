@@ -1,6 +1,5 @@
 
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
 
 const AnimatedLoader = ({ text = "Loading..." }: { text?: string }) => {
   const containerVariants = {
@@ -25,27 +24,11 @@ const AnimatedLoader = ({ text = "Loading..." }: { text?: string }) => {
     }
   };
 
-  const sparkleVariants = {
-    animate: {
-      rotate: 360,
-      scale: [1, 1.2, 1],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
+
 
   return (
     <div className="flex flex-col items-center justify-center space-y-6 p-8">
-      <motion.div
-        variants={sparkleVariants}
-        animate="animate"
-        className="text-blue-600"
-      >
-        <Sparkles className="h-12 w-12" />
-      </motion.div>
+
       
       <motion.div
         variants={containerVariants}

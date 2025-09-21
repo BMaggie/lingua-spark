@@ -16,9 +16,10 @@ const TargetLanguageModal = ({ isOpen, onClose, onLanguageSelect, baseLanguage }
   // Only local languages
   const languages = [
     { code: 'en', name: 'English', flag: '�🇸', difficulty: 'Easy', speakers: '' },
-    { code: 'ha', name: 'Hausa', flag: '��', difficulty: 'Easy', speakers: '' },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', difficulty: 'Easy', speakers: '' },
     { code: 'fu', name: 'Fulani', flag: '🇳🇬', difficulty: 'Easy', speakers: '' },
     { code: 'ff', name: 'Fulfude', flag: '🇬', difficulty: 'Easy', speakers: '' },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', difficulty: 'Easy', speakers: '' },
   ];
   
 

@@ -40,7 +40,7 @@ const AppLayout = () => {
           <div className="flex items-center justify-between px-2 py-1">
             <div className="flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-blue-600" />
-              <span className="font-semibold">LinguaSpark</span>
+              <span className="font-semibold">NorthLing</span>
             </div>
           </div>
         </SidebarHeader>

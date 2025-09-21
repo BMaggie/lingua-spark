@@ -1,4 +1,4 @@
-const CACHE_NAME = 'linguaspark-v1';
+const CACHE_NAME = 'northling-v1';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',

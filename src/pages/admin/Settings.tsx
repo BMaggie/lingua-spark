@@ -36,11 +36,11 @@ const Settings = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="site-name">Site Name</Label>
-              <Input id="site-name" defaultValue="LinguaSpark" />
+              <Input id="site-name" defaultValue="NorthLing" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="site-url">Site URL</Label>
-              <Input id="site-url" defaultValue="https://linguaspark.com" />
+              <Input id="site-url" defaultValue="https://northling.com" />
             </div>
           </div>
           

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Flame, Check, X, Headphones, Sparkles } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
-import type { QuizStage } from "@/integrations/supabase/types";
+import { Trophy, Flame, Check, X, Headphones } from 'lucide-react';
+// import { supabase } from "@/integrations/supabase/client";
+// import type { QuizStage } from "@/integrations/supabase/types";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,42 +19,40 @@ const VocabularyQuiz = ({ languages }: QuizSectionProps) => {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [streakCount, setStreakCount] = useState(0);
-  const [stages, setStages] = useState<QuizStage[]>([]);
-  const [currentStage, setCurrentStage] = useState<QuizStage | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Hardcoded vocabulary data
+  const [loading, setLoading] = useState(false);
+  const [stages] = useState([
+    {
+      id: 1,
+      words: [
+        {
+          word: 'Hello',
+          translation: 'Sannu',
+          options: ['Sannu', 'Barka', 'Ina', 'Lafiya']
+        },
+        {
+          word: 'Water',
+          translation: 'Ruwa',
+          options: ['Ruwa', 'Gida', 'Abinci', 'Daki']
+        },
+        {
+          word: 'Food',
+          translation: 'Abinci',
+          options: ['Abinci', 'Ruwa', 'Gida', 'Lafiya']
+        }
+      ]
+    }
+  ]);
+  const [currentStage, setCurrentStage] = useState(stages[0]);
   const [stageProgress, setStageProgress] = useState<Record<number, { score: number; total: number }>>({});
   const [animation, setAnimation] = useState<'correct' | 'wrong' | null>(null);
   
   const { userProfile, updateProgress } = useUserProgress();
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchQuizData();
-  }, [languages]);
-
-  const fetchQuizData = async () => {
-    try {
-      const { data: quizStages, error } = await supabase
-        .from('quiz_stages')
-        .select('*')
-        .eq('target_language', languages.target)
-        .order('level', { ascending: true });
-
-      if (error) throw error;
-      setStages(quizStages || []);
-      if (quizStages?.length > 0) {
-        setCurrentStage(quizStages[0]);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load quiz data",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // useEffect(() => {
+  //   fetchQuizData();
+  // }, [languages]);
 
   const handleAnswer = async (answer: string) => {
     if (showResult || !currentStage?.words) return;
@@ -128,7 +126,7 @@ const VocabularyQuiz = ({ languages }: QuizSectionProps) => {
       <CardContent className="p-6 space-y-6">
         {showResult ? (
           <div className="text-center space-y-4">
-            <Sparkles className="h-16 w-16 text-yellow-500 mx-auto" />
+
             <h3 className="text-2xl font-bold">Quiz Complete!</h3>
             <p className="text-gray-600">Final Score: {score}</p>
             <Button

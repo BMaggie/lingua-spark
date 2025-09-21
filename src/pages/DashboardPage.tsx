@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import LanguageSelector from '@/components/LanguageSelector';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,6 +30,7 @@ const DashboardPage = () => {
   const { userProfile, loading: userLoading } = useUserProgress();
   const navigate = useNavigate();
   const [selectedLanguages, setSelectedLanguages] = useState({ base: '', target: '' });
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentSection, setCurrentSection] = useState('dashboard');
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const DashboardPage = () => {
     if (!selectedLanguages.base || !selectedLanguages.target) {
       setSelectedLanguages({
         base: 'English',
-        target: 'Spanish'
+        target: 'Hausa'
       });
     }
   }, [userProfile]);
@@ -79,7 +82,7 @@ const DashboardPage = () => {
                 <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg">
                   <span className="text-white text-lg">✨</span>
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">LinguaSpark</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">NorthLing</h1>
               </div>
               <Badge variant="secondary" className="ml-4">
                 {userRole === 'admin' ? 'Admin' : 'Student'}
@@ -161,7 +164,21 @@ const DashboardPage = () => {
                   <span>Learning {selectedLanguages.target}</span>
                   <span>•</span>
                   <span>From {selectedLanguages.base}</span>
+                  <Button variant="outline" size="sm" className="ml-4" onClick={() => setShowLanguageModal(true)}>
+                    Change Language
+                  </Button>
                 </div>
+
+                <Dialog open={showLanguageModal} onOpenChange={setShowLanguageModal}>
+                  <DialogContent className="max-w-lg">
+                    <LanguageSelector
+                      onLanguageSelect={(langs) => {
+                        setSelectedLanguages(langs);
+                        setShowLanguageModal(false);
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
 

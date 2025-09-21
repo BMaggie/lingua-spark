@@ -44,24 +44,44 @@ const CoursePage = () => {
       title: 'Basic Greetings',
       type: 'flashcard',
       content: {
-        word: 'Hola',
+        word: 'Sannu',
         translation: 'Hello',
-        pronunciation: '/ˈo.la/',
-        example: 'Hola, ¿cómo estás?'
+        pronunciation: '/sanːu/',
+        example: 'Sannu, ya kake?'
       },
       completed: false,
       xp: 10
     },
     {
       id: '2',
-      title: 'Common Phrases',
+      title: 'Jimlolin Yau da Kullum',
       type: 'quiz',
       content: {
         questions: [
           {
-            question: 'How do you say "Thank you" in Spanish?',
-            options: ['Hola', 'Gracias', 'Adiós', 'Por favor'],
+            question: 'How do you say "Thank you" in Hausa?',
+            options: ['Sannu', 'Nagode', 'Sai anjima', 'Don Allah'],
             correct: 1
+          },
+          {
+            question: 'How do you say "Good morning" in Hausa?',
+            options: ['Ina kwana', 'Barka da yamma', 'Nagode', 'Lafiya lau'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "Please" in Hausa?',
+            options: ['Don Allah', 'Nagode', 'Sannu', 'Barka'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "Goodbye" in Hausa?',
+            options: ['Sai anjima', 'Sannu', 'Nagode', 'Ina kwana'],
+            correct: 0
+          },
+          {
+            question: 'How do you say "How are you?" in Hausa?',
+            options: ['Lafiya lau?', 'Ina kwana?', 'Barka da yamma?', 'Nagode?'],
+            correct: 0
           }
         ]
       },
@@ -70,13 +90,13 @@ const CoursePage = () => {
     },
     {
       id: '3',
-      title: 'Numbers 1-10',
+      title: 'Lambobi 1-10',
       type: 'flashcard',
       content: {
-        word: 'Uno',
+        word: 'Daya',
         translation: 'One',
-        pronunciation: '/ˈu.no/',
-        example: 'Uno, dos, tres...'
+        pronunciation: '/da.ja/',
+        example: 'Daya, biyu, uku...'
       },
       completed: false,
       xp: 10
@@ -133,7 +153,7 @@ const CoursePage = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Spanish Course</h1>
+            <h1 className="text-3xl font-bold text-foreground">Hause Course</h1>
             <p className="text-muted-foreground">Continue your learning journey</p>
           </div>
           <Badge variant="secondary" className="text-lg px-4 py-2">
