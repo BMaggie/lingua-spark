@@ -18,51 +18,109 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [knownWords, setKnownWords] = useState<number[]>([]);
   const [currentStage, setCurrentStage] = useState<any>(null);
-  const [stages, setStages] = useState<any[]>([{
-    id: 1,
-    level: 1,
-    words: [
-      { word: 'Hello', translation: 'Sannu', difficulty: 'easy' },
-      { word: 'Goodbye', translation: 'Sai anjima', difficulty: 'easy' },
-      { word: 'Thank you', translation: 'Nagode', difficulty: 'easy' }
-    ]
-  },
-  {
-    id: 2,
-    level: 2,
-    words: [
-      { word: 'Water', translation: 'Ruwa', difficulty: 'easy' },
-      { word: 'Food', translation: 'Abinci', difficulty: 'easy' },
-      { word: 'Rice', translation: 'Shinkafa', difficulty: 'easy' }
-    ]
-  },
-  {
-    id: 3,
-    level: 3,
-    words: [
-      { word: 'House', translation: 'Gida', difficulty: 'easy' },
-      { word: 'Room', translation: 'Daki', difficulty: 'easy' },
-      { word: 'School', translation: 'Makaranta', difficulty: 'easy' }
-    ]
-  },
-  {
-    id: 4,
-    level: 4,
-    words: [
-      { word: 'Book', translation: 'Littafi', difficulty: 'easy' },
-      { word: 'Pen', translation: 'Alkalam', difficulty: 'easy' },
-      { word: 'Teacher', translation: 'Malam', difficulty: 'easy' }
-    ]
-  },
-  {
-    id: 5,
-    level: 5,
-    words: [
-      { word: 'Car', translation: 'Mota', difficulty: 'easy' },
-      { word: 'Bicycle', translation: 'Keke', difficulty: 'easy' },
-      { word: 'Market', translation: 'Kasuwa', difficulty: 'easy' }
-    ]
-  }]);
+  const [unlockedState, setUnlockedState] = useState<{stage: number, nextStage?: number} | null>(null);
+  const [stages, setStages] = useState<any[]>([
+    { id: 1, level: 1, words: [
+      { word: 'Sannu', translation: 'Hello', difficulty: 'easy' },
+      { word: 'Sai anjima', translation: 'Goodbye', difficulty: 'easy' },
+      { word: 'Nagode', translation: 'Thank you', difficulty: 'easy' }
+    ] },
+    { id: 2, level: 2, words: [
+      { word: 'Ruwa', translation: 'Water', difficulty: 'easy' },
+      { word: 'Abinci', translation: 'Food', difficulty: 'easy' },
+      { word: 'Shinkafa', translation: 'Rice', difficulty: 'easy' }
+    ] },
+    { id: 3, level: 3, words: [
+      { word: 'Gida', translation: 'House', difficulty: 'easy' },
+      { word: 'Daki', translation: 'Room', difficulty: 'easy' },
+      { word: 'Makaranta', translation: 'School', difficulty: 'easy' }
+    ] },
+    { id: 4, level: 4, words: [
+      { word: 'Littafi', translation: 'Book', difficulty: 'easy' },
+      { word: 'Alkalam', translation: 'Pen', difficulty: 'easy' },
+      { word: 'Malam', translation: 'Teacher', difficulty: 'easy' }
+    ] },
+    { id: 5, level: 5, words: [
+      { word: 'Mota', translation: 'Car', difficulty: 'easy' },
+      { word: 'Keke', translation: 'Bicycle', difficulty: 'easy' },
+      { word: 'Kasuwa', translation: 'Market', difficulty: 'easy' }
+    ] },
+    { id: 6, level: 6, words: [
+      { word: 'Shago', translation: 'Shop', difficulty: 'easy' },
+      { word: 'Kudi', translation: 'Money', difficulty: 'easy' },
+      { word: 'Gona', translation: 'Farm', difficulty: 'easy' }
+    ] },
+    { id: 7, level: 7, words: [
+      { word: 'Dutse', translation: 'Mountain', difficulty: 'easy' },
+      { word: 'Kogi', translation: 'River', difficulty: 'easy' },
+      { word: 'Daji', translation: 'Forest', difficulty: 'easy' }
+    ] },
+    { id: 8, level: 8, words: [
+      { word: 'Hanya', translation: 'Road', difficulty: 'easy' },
+      { word: 'Birni', translation: 'City', difficulty: 'easy' },
+      { word: 'Kauye', translation: 'Village', difficulty: 'easy' }
+    ] },
+    { id: 9, level: 9, words: [
+      { word: 'Ido', translation: 'Eye', difficulty: 'easy' },
+      { word: 'Hannu', translation: 'Hand', difficulty: 'easy' },
+      { word: 'Kafa', translation: 'Leg', difficulty: 'easy' }
+    ] },
+    { id: 10, level: 10, words: [
+      { word: 'Baki', translation: 'Mouth', difficulty: 'easy' },
+      { word: 'Hanci', translation: 'Nose', difficulty: 'easy' },
+      { word: 'Kunne', translation: 'Ear', difficulty: 'easy' }
+    ] },
+    { id: 11, level: 11, words: [
+      { word: 'Uba', translation: 'Father', difficulty: 'easy' },
+      { word: 'Uwa', translation: 'Mother', difficulty: 'easy' },
+      { word: 'Yaro', translation: 'Boy', difficulty: 'easy' }
+    ] },
+    { id: 12, level: 12, words: [
+      { word: 'Yarinya', translation: 'Girl', difficulty: 'easy' },
+      { word: 'Aboki', translation: 'Friend (male)', difficulty: 'easy' },
+      { word: 'Abokiya', translation: 'Friend (female)', difficulty: 'easy' }
+    ] },
+    { id: 13, level: 13, words: [
+      { word: 'Kifi', translation: 'Fish', difficulty: 'easy' },
+      { word: 'Kaji', translation: 'Chicken', difficulty: 'easy' },
+      { word: 'Nama', translation: 'Meat', difficulty: 'easy' }
+    ] },
+    { id: 14, level: 14, words: [
+      { word: 'Doya', translation: 'Yam', difficulty: 'easy' },
+      { word: 'Wake', translation: 'Beans', difficulty: 'easy' },
+      { word: 'Gyada', translation: 'Groundnut', difficulty: 'easy' }
+    ] },
+    { id: 15, level: 15, words: [
+      { word: 'Ayaba', translation: 'Banana', difficulty: 'easy' },
+      { word: 'Lemu', translation: 'Orange', difficulty: 'easy' },
+      { word: 'Tumatir', translation: 'Tomato', difficulty: 'easy' }
+    ] },
+    { id: 16, level: 16, words: [
+      { word: 'Kwakwa', translation: 'Coconut', difficulty: 'easy' },
+      { word: 'Dabino', translation: 'Date', difficulty: 'easy' },
+      { word: 'Zuma', translation: 'Honey', difficulty: 'easy' }
+    ] },
+    { id: 17, level: 17, words: [
+      { word: 'Goro', translation: 'Kola nut', difficulty: 'easy' },
+      { word: 'Kwakwa', translation: 'Coconut', difficulty: 'easy' },
+      { word: 'Kankana', translation: 'Watermelon', difficulty: 'easy' }
+    ] },
+    { id: 18, level: 18, words: [
+      { word: 'Agogo', translation: 'Clock', difficulty: 'easy' },
+      { word: 'Tebur', translation: 'Table', difficulty: 'easy' },
+      { word: 'Kujera', translation: 'Chair', difficulty: 'easy' }
+    ] },
+    { id: 19, level: 19, words: [
+      { word: 'Tagar', translation: 'Window', difficulty: 'easy' },
+      { word: 'Kofa', translation: 'Door', difficulty: 'easy' },
+      { word: 'Bango', translation: 'Wall', difficulty: 'easy' }
+    ] },
+    { id: 20, level: 20, words: [
+      { word: 'Kasa', translation: 'Floor', difficulty: 'easy' },
+      { word: 'Hasken', translation: 'Light', difficulty: 'easy' },
+      { word: 'Duhu', translation: 'Dark', difficulty: 'easy' }
+    ] }
+  ]);
   const [loading, setLoading] = useState(false);
   const [stageProgress, setStageProgress] = useState<Record<number, number>>({});
   const { userProfile, updateProgress, loading: userLoading } = useUserProgress();
@@ -157,40 +215,16 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
 
       // Check if stage is completed
       if (newKnownWords.length === currentStage.words.length) {
-        // Update user's completed stages
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) throw new Error('No user found');
-
-          const { error } = await supabase
-            .from('profiles')
-            .update({
-              stages_completed: {
-                vocabulary: [...completedStages, currentStage.level]
-              }
-            })
-            .eq('user_id', user.id);
-
-          if (error) throw error;
-
-          toast({
-            title: "Stage Completed!",
-            description: `Congratulations! You've mastered all words in stage ${currentStage.level}!`,
-          });
-
-          // Move to next stage if available
-          const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
-          if (nextStageIndex < stages.length) {
-            handleStageSelect(stages[nextStageIndex].level);
-          }
-        } catch (error) {
-          console.error('Error updating completed stages:', error);
-          toast({
-            title: "Error",
-            description: "Failed to update progress",
-            variant: "destructive"
-          });
-        }
+        // UNLOCK NEW STATE: show celebration and unlock next stage
+        const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
+        setUnlockedState({
+          stage: currentStage.level,
+          nextStage: nextStageIndex < stages.length ? stages[nextStageIndex].level : undefined
+        });
+        toast({
+          title: "Stage Completed!",
+          description: `Congratulations! You've mastered all words in stage ${currentStage.level}!`,
+        });
       } else {
         toast({
           title: "Great job! 🎉",
@@ -227,13 +261,54 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
     );
   }
 
-  if (!currentStage || !userProfile) {
+  if (!currentStage) {
     return (
       <Card>
         <CardContent className="p-8 text-center text-gray-500">
           No vocabulary stages available
         </CardContent>
       </Card>
+    );
+  }
+
+  // Show unlocked state UI if a stage was just completed
+  if (unlockedState) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-gradient-to-br from-green-100 to-blue-100 border-green-300 animate-pulse">
+          <CardContent className="text-center p-8 flex flex-col items-center">
+            <div className="text-5xl mb-4">🎉</div>
+            <h3 className="text-2xl font-bold text-green-800 mb-2">
+              Stage {unlockedState.stage} Completed!
+            </h3>
+            <p className="text-green-700 mb-4">
+              You unlocked a new state in your learning journey!
+            </p>
+            {unlockedState.nextStage ? (
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 mb-2"
+                onClick={() => {
+                  setUnlockedState(null);
+                  handleStageSelect(unlockedState.nextStage!);
+                }}
+              >
+                Go to Stage {unlockedState.nextStage}
+              </Button>
+            ) : (
+              <div className="text-lg text-blue-700 font-semibold">All stages completed!</div>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => {
+                setUnlockedState(null);
+                resetCards();
+              }}
+            >
+              Practice Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -271,63 +346,69 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
         </CardContent>
       </Card>
 
-      <Card 
-        className={`h-80 cursor-pointer transition-all duration-700 transform-gpu ${
-          isFlipped ? 'rotate-y-180' : ''
-        } hover:shadow-xl`}
+      <div
+        className="relative h-80 w-full cursor-pointer perspective"
         onClick={handleCardFlip}
       >
-        {/* Front of card */}
-        <CardContent className="absolute inset-0 backface-hidden flex flex-col justify-center items-center p-8">
-          <div className="text-center space-y-4">
-            <div className="text-sm text-gray-500 uppercase tracking-wide flex items-center justify-center gap-2">
-              <Badge variant={currentCard.difficulty === 'easy' ? 'secondary' : currentCard.difficulty === 'medium' ? 'default' : 'destructive'}>
-                {currentCard.difficulty}
-              </Badge>
-            </div>
-            <div className="text-4xl font-bold text-gray-800">
-              {currentCard.word}
-            </div>
-            <div className="text-gray-600 italic">
-              {languages.base}
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                playAudio(currentCard.word, languages.base);
-              }}
-            >
-              <Headphones className="h-4 w-4 mr-2" />
-              Listen
-            </Button>
-          </div>
-        </CardContent>
-
-        {/* Back of card */}
-        <CardContent className={`absolute inset-0 backface-hidden rotate-y-180 flex flex-col justify-center items-center p-8 bg-gradient-to-br from-blue-50 to-purple-50`}>
-          <div className="text-center space-y-4">
-            <div className="text-sm text-gray-500 uppercase tracking-wide">
-              Translation in {languages.target}
-            </div>
-            <div className="text-4xl font-bold text-blue-600">
-              {currentCard.translation}
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                playAudio(currentCard.translation, languages.target);
-              }}
-            >
-              <Headphones className="h-4 w-4 mr-2" />
-              Listen
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        <div
+          className={`absolute inset-0 w-full h-full transition-transform duration-700 transform-gpu ${isFlipped ? 'rotate-y-180' : ''}`}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {/* Front of card */}
+          <Card className="absolute inset-0 w-full h-full backface-hidden flex flex-col justify-center items-center p-8">
+            <CardContent>
+              <div className="text-center space-y-4">
+                <div className="text-sm text-gray-500 uppercase tracking-wide flex items-center justify-center gap-2">
+                  <Badge variant={currentCard.difficulty === 'easy' ? 'secondary' : currentCard.difficulty === 'medium' ? 'default' : 'destructive'}>
+                    {currentCard.difficulty}
+                  </Badge>
+                </div>
+                <div className="text-4xl font-bold text-gray-800">
+                  {currentCard.word}
+                </div>
+                <div className="text-gray-600 italic">
+                  {languages.base}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playAudio(currentCard.word, languages.base);
+                  }}
+                >
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Listen
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Back of card */}
+          <Card className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 flex flex-col justify-center items-center p-8 bg-gradient-to-br from-blue-50 to-purple-50">
+            <CardContent>
+              <div className="text-center space-y-4">
+                <div className="text-sm text-gray-500 uppercase tracking-wide">
+                  Translation in {languages.target}
+                </div>
+                <div className="text-4xl font-bold text-blue-600">
+                  {currentCard.translation}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playAudio(currentCard.translation, languages.target);
+                  }}
+                >
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Listen
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       <div className="text-center text-sm text-gray-500">
         Click the card to flip it and see the translation
@@ -339,14 +420,14 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
           variant="outline"
           className="flex-1 max-w-xs"
         >
-          Still Learning
+         Still Learning
         </Button>
         <Button
           onClick={handleKnowWord}
           className="flex-1 max-w-xs bg-green-600 hover:bg-green-700"
         >
           <Check className="h-4 w-4 mr-2" />
-          I Know This
+              I Know This
         </Button>
       </div>
 

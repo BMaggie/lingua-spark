@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,43 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProgress } from '@/hooks/useUserProgress';
-import VocabularyCard from '@/components/VocabularyCard';
-import QuizSection from '@/components/QuizSection';
+// import VocabularyCard from '@/components/VocabularyCard';
+// import QuizSection from '@/components/QuizSection';
+
+// Dynamically import the correct language component for Lessons, Quiz, Vocabulary
+const languageComponentMap = {
+  English: {
+    Lessons: React.lazy(() => import('@/languages/english/Lessons')),
+    Quiz: React.lazy(() => import('@/languages/english/Quiz')),
+    Vocabulary: React.lazy(() => import('@/languages/english/Vocabulary')),
+  },
+  Hausa: {
+    Lessons: React.lazy(() => import('@/languages/hausa/Lessons')),
+    Quiz: React.lazy(() => import('@/languages/hausa/Quiz')),
+    Vocabulary: React.lazy(() => import('@/languages/hausa/Vocabulary')),
+  },
+  Fulani: {
+    Lessons: React.lazy(() => import('@/languages/fulani/Lessons')),
+    Quiz: React.lazy(() => import('@/languages/fulani/Quiz')),
+    Vocabulary: React.lazy(() => import('@/languages/fulani/Vocabulary')),
+  },
+  Fulfulde: {
+    Lessons: React.lazy(() => import('@/languages/fulfude/Lessons')),
+    Quiz: React.lazy(() => import('@/languages/fulfude/Quiz')),
+    Vocabulary: React.lazy(() => import('@/languages/fulfude/Vocabulary')),
+  },
+};
+
+const DynamicLanguageComponent = ({ type, languages }) => {
+  const lang = languages.target;
+  const Comp = languageComponentMap[lang]?.[type];
+  if (!Comp) return <div className="text-center text-red-500">Component not found for {lang} {type}</div>;
+  return (
+    <Suspense fallback={<div className="text-center p-8">Loading {lang} {type}...</div>}>
+      <Comp languages={languages} />
+    </Suspense>
+  );
+};
 import Leaderboard from '@/components/Leaderboard';
 import { 
   BookOpen, 
@@ -359,12 +394,28 @@ const DashboardPage = () => {
           </div>
         )}
 
+
+
+
         {currentSection === 'vocabulary' && (
-          <VocabularyCard languages={selectedLanguages} />
+          <DynamicLanguageComponent
+            type="Vocabulary"
+            languages={selectedLanguages}
+          />
         )}
 
         {currentSection === 'quiz' && (
-          <QuizSection languages={selectedLanguages} />
+          <DynamicLanguageComponent
+            type="Quiz"
+            languages={selectedLanguages}
+          />
+        )}
+
+        {currentSection === 'lessons' && (
+          <DynamicLanguageComponent
+            type="Lessons"
+            languages={selectedLanguages}
+          />
         )}
 
         {currentSection === 'leaderboard' && (

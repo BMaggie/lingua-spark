@@ -52,67 +52,29 @@ const StagesSelector = ({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+    <div className="flex flex-wrap gap-2 justify-center mb-6">
       {stages.map((stage) => {
         const isCompleted = completedStages.includes(stage.level);
         const isAvailable = stage.level === 1 || completedStages.includes(stage.level - 1);
         const isCurrent = stage.id === currentStageId;
-        const stageProgress = progress[stage.id] || 0;
-
         return (
-          <Card
+          <button
             key={stage.id}
-            className={`cursor-pointer transition-all duration-200 ${
-              isCurrent
-                ? 'ring-2 ring-blue-500 bg-blue-50'
-                : isCompleted
-                ? 'bg-green-50'
-                : !isAvailable
-                ? 'opacity-60'
-                : 'hover:bg-gray-50'
-            }`}
             onClick={() => handleStageClick(stage)}
+            disabled={!isAvailable}
+            className={`w-10 h-10 flex items-center justify-center rounded-md border text-lg font-bold transition-all duration-200
+              ${isCurrent ? 'bg-blue-600 text-white border-blue-600 scale-110 shadow-lg' :
+                isCompleted ? 'bg-green-500 text-white border-green-500' :
+                !isAvailable ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed' :
+                'bg-white text-gray-800 border-gray-300 hover:bg-blue-100 hover:border-blue-400'}
+            `}
+            title={isAvailable ? `Stage ${stage.level}` : 'Locked'}
+            aria-label={`Stage ${stage.level}`}
           >
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Stage {stage.level}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${getDifficultyColor(stage.difficulty)}`}>
-                      {stage.difficulty}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {stage.wordsCount} words
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  {isCompleted ? (
-                    <Star className="h-5 w-5 text-yellow-500" />
-                  ) : !isAvailable ? (
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5 text-blue-500" />
-                  )}
-                </div>
-              </div>
-              {(isAvailable || isCompleted) && (
-                <div className="mt-3">
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div
-                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${(stageProgress / stage.wordsCount) * 100}%` }}
-                    />
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {stageProgress}/{stage.wordsCount} completed
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            {stage.level}
+            {isCompleted && <Star className="h-4 w-4 text-yellow-300 ml-1" />}
+            {!isAvailable && <Lock className="h-4 w-4 text-gray-400 ml-1" />}
+          </button>
         );
       })}
     </div>
