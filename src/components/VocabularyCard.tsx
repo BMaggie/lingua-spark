@@ -174,8 +174,12 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
   };
 
   const handleKnowWord = async () => {
-    if (!currentStage || !currentCard || !userProfile) return;
+    if (!currentStage || !currentCard || !userProfile) {
+      console.log('Missing required data:', { currentStage, currentCard, userProfile });
+      return;
+    }
     
+    // Always add the word to known words if it's not already there
     if (!knownWords.includes(currentCardIndex)) {
       const newKnownWords = [...knownWords, currentCardIndex];
       setKnownWords(newKnownWords);
@@ -192,15 +196,38 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
                     currentCard.difficulty === 'medium' ? 20 : 10;
       
       try {
+        // Only add the stage to completed stages if all words are known
+        const completedStagesList = [...(userProfile.stages_completed?.vocabulary || [])];
+        if (newKnownWords.length === currentStage.words.length && 
+            !completedStagesList.includes(currentStage.level)) {
+          completedStagesList.push(currentStage.level);
+        }
+
         // Update user progress
         await updateProgress(points, {
-          vocabulary: [...(userProfile.stages_completed?.vocabulary || []), currentStage.level]
+          vocabulary: completedStagesList
         });
         
+        // Show points toast
         toast({
           title: `+${points} Points!`,
           description: "Great job! Keep learning! 🌟",
         });
+
+        // Check if stage is completed
+        if (newKnownWords.length === currentStage.words.length) {
+          // Show completion toast and set unlocked state
+          toast({
+            title: "Stage Completed!",
+            description: `Congratulations! You've mastered all words in stage ${currentStage.level}!`,
+          });
+          
+          const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
+          setUnlockedState({
+            stage: currentStage.level,
+            nextStage: nextStageIndex < stages.length ? stages[nextStageIndex].level : undefined
+          });
+        }
       } catch (error) {
         console.error('Error updating progress:', error);
         toast({
@@ -209,26 +236,9 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
           variant: "destructive"
         });
       }
-
-      // Check if stage is completed
-      if (newKnownWords.length === currentStage.words.length) {
-        // UNLOCK NEW STATE: show celebration and unlock next stage
-        const nextStageIndex = stages.findIndex(s => s.id === currentStage.id) + 1;
-        setUnlockedState({
-          stage: currentStage.level,
-          nextStage: nextStageIndex < stages.length ? stages[nextStageIndex].level : undefined
-        });
-        toast({
-          title: "Stage Completed!",
-          description: `Congratulations! You've mastered all words in stage ${currentStage.level}!`,
-        });
-      } else {
-        toast({
-          title: "Great job! 🎉",
-          description: `You earned ${points} points for learning a new word!`,
-        });
-      }
     }
+    
+    // Always move to next card
     nextCard();
   };
 
@@ -246,7 +256,7 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
     setKnownWords([]);
   };
 
-  if (loading || userLoading) {
+  if (loading) {
     return (
       <Card>
         <CardContent className="p-8">
@@ -416,17 +426,28 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
           onClick={handleDontKnowWord}
           variant="outline"
           className="flex-1 max-w-xs"
+          disabled={loading || userLoading || !userProfile}
         >
          Still Learning
         </Button>
         <Button
           onClick={handleKnowWord}
-          className="flex-1 max-w-xs bg-green-600 hover:bg-green-700"
+          className="flex-1 max-w-xs bg-green-600 hover:bg-green-700 disabled:bg-gray-400"
+          disabled={loading || userLoading || !userProfile}
         >
-          <Check className="h-4 w-4 mr-2" />
-              I Know This
+          {loading || userLoading ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white mr-2" />
+          ) : (
+            <Check className="h-4 w-4 mr-2" />
+          )}
+          I Know This
         </Button>
       </div>
+      {!userProfile && (
+        <div className="text-center text-sm text-red-500 mt-2">
+          Loading user profile... Please wait.
+        </div>
+      )}
 
       {currentStage && knownWords.length === currentStage.words.length && (
         <Card className="bg-green-50 border-green-200">

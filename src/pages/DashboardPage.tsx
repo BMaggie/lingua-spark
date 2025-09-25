@@ -196,6 +196,63 @@ const DashboardPage = () => {
               </CardContent>
             </Card>
 
+            {/* Learning Paths */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <BookOpen className="h-5 w-5 text-blue-600" />
+                    <span>Vocabulary</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-blue-600 mb-4">Learn and practice new words in {selectedLanguages.target}</p>
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => navigate('/vocabulary')}
+                  >
+                    Start Learning
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Brain className="h-5 w-5 text-purple-600" />
+                    <span>Lessons</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-purple-600 mb-4">Interactive lessons to improve your {selectedLanguages.target}</p>
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={() => navigate('/course')}
+                  >
+                    Start Learning
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Trophy className="h-5 w-5 text-green-600" />
+                    <span>Quiz</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-green-600 mb-4">Test your knowledge with interactive quizzes</p>
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => navigate('/quiz')}
+                  >
+                    Start Quiz
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Enhanced Analytics Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
