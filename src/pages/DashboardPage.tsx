@@ -12,38 +12,17 @@ import { useUserProgress } from '@/hooks/useUserProgress';
 // import VocabularyCard from '@/components/VocabularyCard';
 // import QuizSection from '@/components/QuizSection';
 
-// Dynamically import the correct language component for Lessons, Quiz, Vocabulary
+// Dynamic component loading based on selected language
 const languageComponentMap = {
-  English: {
-    Lessons: React.lazy(() => import('@/languages/english/Lessons')),
-    Quiz: React.lazy(() => import('@/languages/english/Quiz')),
-    Vocabulary: React.lazy(() => import('@/languages/english/Vocabulary')),
-  },
-  Hausa: {
-    Lessons: React.lazy(() => import('@/languages/hausa/Lessons')),
-    Quiz: React.lazy(() => import('@/languages/hausa/Quiz')),
-    Vocabulary: React.lazy(() => import('@/languages/hausa/Vocabulary')),
-  },
-  Fulani: {
-    Lessons: React.lazy(() => import('@/languages/fulani/Lessons')),
-    Quiz: React.lazy(() => import('@/languages/fulani/Quiz')),
-    Vocabulary: React.lazy(() => import('@/languages/fulani/Vocabulary')),
-  },
-  Fulfulde: {
-    Lessons: React.lazy(() => import('@/languages/fulfude/Lessons')),
-    Quiz: React.lazy(() => import('@/languages/fulfude/Quiz')),
-    Vocabulary: React.lazy(() => import('@/languages/fulfude/Vocabulary')),
-  },
+  // Components will be loaded dynamically from the new unified language system
 };
 
 const DynamicLanguageComponent = ({ type, languages }) => {
-  const lang = languages.target;
-  const Comp = languageComponentMap[lang]?.[type];
-  if (!Comp) return <div className="text-center text-red-500">Component not found for {lang} {type}</div>;
   return (
-    <Suspense fallback={<div className="text-center p-8">Loading {lang} {type}...</div>}>
-      <Comp languages={languages} />
-    </Suspense>
+    <div className="text-center p-8">
+      Loading content for {languages.target} {type}...
+      <p className="text-sm text-gray-500 mt-2">Content will be available soon.</p>
+    </div>
   );
 };
 import Leaderboard from '@/components/Leaderboard';

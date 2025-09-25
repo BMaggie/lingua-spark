@@ -161,19 +161,16 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
     const stage = stages.find(s => s.level === stageId);
     if (!stage) return;
     
-    const isAvailable = stage.level === 1 || completedStages.includes(stage.level - 1);
-    if (!isAvailable) {
-      toast({
-        title: "Stage Locked",
-        description: "Complete the previous stage first!",
-        variant: "destructive"
-      });
-      return;
-    }
+    // All stages are now unlocked by default
     setCurrentStage(stage);
     setCurrentCardIndex(0);
     setKnownWords([]);
     setIsFlipped(false);
+    
+    toast({
+      title: "Stage Selected",
+      description: `Stage ${stage.level} loaded successfully!`,
+    });
   };
 
   const handleKnowWord = async () => {
