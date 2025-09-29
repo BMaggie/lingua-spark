@@ -125,6 +125,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               transition={{ duration: 0.2 }}
             >
 
+              {/* <img src="/logo.png" alt="logo" width={50} /> */}
               <h1 className="text-2xl font-bold gradient-text">
                 NorthLing
               </h1>
