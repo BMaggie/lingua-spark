@@ -22,16 +22,16 @@ interface LanguageSelectionFlowProps {
 
 const SPOKEN_LANGUAGES: Language[] = [
   { code: 'en', name: 'English', flag: '🇺🇸', speakers: '1.5B speakers' },
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '100M speakers' },
-  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '100M speakers' },
-  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '100M speakers' }
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '50M speakers' },
+  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '20M speakers' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '15M speakers' }
 ];
 
 const LEARNING_LANGUAGES: Language[] = [
-  // { code: 'en', name: 'English', flag: '🇺🇸', speakers: '1.5B+ speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '100M speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '100M speakers', difficulty: 'Beginner', isPopular: true },
-  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '100M speakers', difficulty: 'Beginner', isPopular: true }
+  { code: 'en', name: 'English', flag: '🇺🇸', speakers: '1.5B speakers', difficulty: 'Beginner', isPopular: true },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬', speakers: '50M speakers', difficulty: 'Intermediate' },
+  { code: 'fu', name: 'Fulani', flag: '🇳🇬', speakers: '20M speakers', difficulty: 'Intermediate' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', speakers: '15M speakers', difficulty: 'Intermediate' }
 ];
 
 const LanguageSelectionFlow = ({ onComplete, onClose }: LanguageSelectionFlowProps) => {

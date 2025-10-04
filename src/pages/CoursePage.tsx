@@ -46,321 +46,65 @@ const CoursePage = () => {
       content: {
         word: 'Sannu',
         translation: 'Hello',
-        pronunciation: '/sanːu/',
-        example: 'Sannu, ya kake?'
+        example: 'Sannu! Yaya kake?' // Hello! How are you?
       },
       completed: false,
       xp: 10
     },
     {
       id: '2',
-      title: 'Jimlolin Yau da Kullum',
-      type: 'quiz',
+      title: 'Expressing Thanks',
+      type: 'flashcard',
       content: {
-        questions: [
-          {
-            question: 'How do you say "Thank you" in Hausa?',
-            options: ['Sannu', 'Nagode', 'Sai anjima', 'Don Allah'],
-            correct: 1
-          },
-          {
-            question: 'How do you say "Good morning" in Hausa?',
-            options: ['Ina kwana', 'Barka da yamma', 'Nagode', 'Lafiya lau'],
-            correct: 0
-          },
-          {
-            question: 'How do you say "Please" in Hausa?',
-            options: ['Don Allah', 'Nagode', 'Sannu', 'Barka'],
-            correct: 0
-          },
-          {
-            question: 'How do you say "Goodbye" in Hausa?',
-            options: ['Sai anjima', 'Sannu', 'Nagode', 'Ina kwana'],
-            correct: 0
-          },
-          {
-            question: 'How do you say "How are you?" in Hausa?',
-            options: ['Lafiya lau?', 'Ina kwana?', 'Barka da yamma?', 'Nagode?'],
-            correct: 0
-          }
-        ]
+        word: 'Nagode',
+        translation: 'Thank you',
+        example: 'Nagode da taimako.' // Thank you for your help.
       },
       completed: false,
-      xp: 15
+      xp: 10
     },
     {
       id: '3',
-      title: 'Lambobi 1-10',
+      title: 'Common Questions',
       type: 'flashcard',
       content: {
-        word: 'Daya',
-        translation: 'One',
-        pronunciation: '/da.ja/',
-        example: 'Daya, biyu, uku...'
+        word: 'ya kake/keke?',
+        translation: 'How are you?',
+        example: 'ya kake/keke?.' // How are you? I am fine.
       },
       completed: false,
       xp: 10
     },
     {
       id: '4',
-      title: 'Colors',
-      type: 'flashcard',
-      content: {
-        word: 'Ja',
-        translation: 'Red',
-        pronunciation: '/ja/',
-        example: 'Fentin nan ja ne.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '5',
-      title: 'Common Phrases',
+      title: 'Hausa Basics Quiz',
       type: 'quiz',
       content: {
         questions: [
           {
-            question: 'How do you say "Excuse me" in Hausa?',
-            options: ['Yi hakuri', 'Nagode', 'Ina kwana', 'Barka da yamma'],
+            question: 'What does "Sannu" mean in English?',
+            options: ['Hello', 'Thank you', 'Goodbye', 'Water'],
             correct: 0
           },
           {
-            question: 'How do you say "Yes" in Hausa?',
-            options: ['A’a', 'Eh', 'Nagode', 'Don Allah'],
-            correct: 1
-          }
-        ]
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '6',
-      title: 'Family',
-      type: 'flashcard',
-      content: {
-        word: 'Uba',
-        translation: 'Father',
-        pronunciation: '/u.ba/',
-        example: 'Uba na yana da kirki.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '7',
-      title: 'Food',
-      type: 'flashcard',
-      content: {
-        word: 'Shinkafa',
-        translation: 'Rice',
-        pronunciation: '/ʃin.ka.fa/',
-        example: 'Ina son shinkafa.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '8',
-      title: 'Days of the Week',
-      type: 'quiz',
-      content: {
-        questions: [
-          {
-            question: 'What is "Monday" in Hausa?',
-            options: ['Litinin', 'Talata', 'Laraba', 'Juma’a'],
+            question: 'How do you say "Thank you" in Hausa?',
+            options: ['Nagode', 'Gida', 'Ruwa', 'Kudi'],
             correct: 0
           },
           {
-            question: 'What is "Friday" in Hausa?',
-            options: ['Asabar', 'Juma’a', 'Litinin', 'Laraba'],
-            correct: 1
-          }
-        ]
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '9',
-      title: 'Weather',
-      type: 'flashcard',
-      content: {
-        word: 'Ruwa',
-        translation: 'Rain',
-        pronunciation: '/ru.wa/',
-        example: 'Ruwa yana sauka.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '10',
-      title: 'Numbers 11-20',
-      type: 'flashcard',
-      content: {
-        word: 'Goma sha daya',
-        translation: 'Eleven',
-        pronunciation: '/go.ma ʃa da.ja/',
-        example: 'Goma sha daya, goma sha biyu...'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '11',
-      title: 'Professions',
-      type: 'flashcard',
-      content: {
-        word: 'Likita',
-        translation: 'Doctor',
-        pronunciation: '/li.ki.ta/',
-        example: 'Likita yana asibiti.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '12',
-      title: 'School',
-      type: 'flashcard',
-      content: {
-        word: 'Makaranta',
-        translation: 'School',
-        pronunciation: '/ma.ka.ran.ta/',
-        example: 'Yara suna makaranta.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '13',
-      title: 'Animals',
-      type: 'quiz',
-      content: {
-        questions: [
-          {
-            question: 'What is "Dog" in Hausa?',
-            options: ['Kare', 'Mage', 'Akuya', 'Shanu'],
+            question: 'What is the Hausa word for "Water"?',
+            options: ['Ruwa', 'Abinci', 'Kasuwa', 'Makaranta'],
             correct: 0
           },
           {
-            question: 'What is "Cow" in Hausa?',
-            options: ['Kare', 'Mage', 'Akuya', 'Shanu'],
-            correct: 3
-          }
-        ]
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '14',
-      title: 'Body Parts',
-      type: 'flashcard',
-      content: {
-        word: 'Ido',
-        translation: 'Eye',
-        pronunciation: '/i.do/',
-        example: 'Ido biyu.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '15',
-      title: 'Transportation',
-      type: 'flashcard',
-      content: {
-        word: 'Mota',
-        translation: 'Car',
-        pronunciation: '/mo.ta/',
-        example: 'Mota tana tafiya.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '16',
-      title: 'Fruits',
-      type: 'flashcard',
-      content: {
-        word: 'Ayaba',
-        translation: 'Banana',
-        pronunciation: '/a.ja.ba/',
-        example: 'Ayaba tana da dadi.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '17',
-      title: 'Clothing',
-      type: 'flashcard',
-      content: {
-        word: 'Riga',
-        translation: 'Shirt',
-        pronunciation: '/ri.ga/',
-        example: 'Riga mai kyau.'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '18',
-      title: 'Time',
-      type: 'quiz',
-      content: {
-        questions: [
-          {
-            question: 'What is "Morning" in Hausa?',
-            options: ['Yamma', 'Asuba', 'Maraice', 'Dare'],
-            correct: 1
-          },
-          {
-            question: 'What is "Night" in Hausa?',
-            options: ['Dare', 'Asuba', 'Yamma', 'Maraice'],
+            question: 'Translate "School" to Hausa.',
+            options: ['Makaranta', 'Kasuwa', 'Gida', 'Abinci'],
             correct: 0
           }
         ]
       },
       completed: false,
-      xp: 10
-    },
-    {
-      id: '19',
-      title: 'Greetings 2',
-      type: 'flashcard',
-      content: {
-        word: 'Barka da yamma',
-        translation: 'Good evening',
-        pronunciation: '/bar.ka da yam.ma/',
-        example: 'Barka da yamma, ya hanya?'
-      },
-      completed: false,
-      xp: 10
-    },
-    {
-      id: '20',
-      title: 'Simple Conversation',
-      type: 'quiz',
-      content: {
-        questions: [
-          {
-            question: 'How do you say "What is your name?" in Hausa?',
-            options: ['Menene sunanka?', 'Ina kwana?', 'Nagode', 'Barka da yamma'],
-            correct: 0
-          },
-          {
-            question: 'How do you say "I am fine" in Hausa?',
-            options: ['Lafiya lau', 'Nagode', 'Sannu', 'Don Allah'],
-            correct: 0
-          }
-        ]
-      },
-      completed: false,
-      xp: 10
+      xp: 20
     }
   ];
 
@@ -414,7 +158,7 @@ const CoursePage = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Hause Course</h1>
+            <h1 className="text-3xl font-bold text-foreground">Hausa Course</h1>
             <p className="text-muted-foreground">Continue your learning journey</p>
           </div>
           <Badge variant="secondary" className="text-lg px-4 py-2">

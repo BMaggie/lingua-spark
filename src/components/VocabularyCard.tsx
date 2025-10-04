@@ -168,8 +168,61 @@ function VocabularyCard({ languages }: VocabularyCardProps) {
   const completedStages = userProfile?.stages_completed?.vocabulary || [];
 
   useEffect(() => {
-    setCurrentStage(stages[0]);
-  }, [stages]);
+    const fetchStages = async () => {
+      try {
+        const { data: vocabStages, error } = await supabase
+          .from('vocabulary_stages')
+          .select('*')
+          .order('level', { ascending: true });
+
+        if (error) {
+          console.error('Database error:', error);
+          // If table doesn't exist, create some sample data
+          if (error.message.includes('relation "vocabulary_stages" does not exist')) {
+            console.log('Creating sample vocabulary stages...');
+            const sampleStages: VocabularyStage[] = [
+              {
+                id: 1,
+                level: 1,
+                words: [
+                  { word: 'Sannu', translation: 'Hello', difficulty: 'easy' },
+                  { word: 'Nagode', translation: 'Thank you', difficulty: 'easy' },
+                  { word: 'Ina kwana', translation: 'Good morning', difficulty: 'easy' },
+                  { word: 'Ina lafiya?', translation: 'How are you?', difficulty: 'easy' },
+                  { word: 'Gida', translation: 'Home', difficulty: 'easy' },
+                  { word: 'Abinci', translation: 'Food', difficulty: 'easy' },
+                  { word: 'Ruwa', translation: 'Water', difficulty: 'easy' },
+                  { word: 'Kudi', translation: 'Money', difficulty: 'easy' },
+                  { word: 'Makaranta', translation: 'School', difficulty: 'easy' },
+                  { word: 'Kasuwa', translation: 'Market', difficulty: 'easy' }
+                ]
+              }
+            ];
+            setStages(sampleStages);
+            setCurrentStage(sampleStages[0]);
+          } else {
+            throw error;
+          }
+        } else {
+          setStages(vocabStages || []);
+          if (vocabStages && vocabStages.length > 0) {
+            setCurrentStage(vocabStages[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching vocabulary stages:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load vocabulary stages. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStages();
+  }, [toast]);
 
   const nextCard = () => {
     if (!currentStage) return;

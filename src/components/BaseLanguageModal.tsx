@@ -6,10 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguagePreferences } from '@/hooks/useLanguagePreferences';
 
 const LANGUAGES = [
- { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-  { code: 'fu', name: 'Fulani', flag: '🇳🇬' },
-  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' }
+ 
+  // Nigerian language  { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
+  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
+  { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' },
+  { code: 'ti', name: 'Tiv', flag: '🇳🇬' },
+  { code: 'kr', name: 'Kanuri', flag: '🇳🇬' },
+  { code: 'ib', name: 'Ibibio', flag: '🇳🇬' },
+  { code: 'ee', name: 'Edo', flag: '🇳🇬' },
+  { code: 'urh', name: 'Urhobo', flag: '🇳🇬' }
 ];
 
 interface BaseLanguageModalProps {

@@ -51,11 +51,17 @@ const DashboardPage = () => {
     // Set default languages for demo purposes if no language preferences exist
     if (!selectedLanguages.base || !selectedLanguages.target) {
       setSelectedLanguages({
-        base: 'English',
-        target: 'Hausa'
+        base: 'English', // or 'Hausa', 'Fulani', 'Fulfulde'
+        target: 'Hausa' // or 'English', 'Fulani', 'Fulfulde'
       });
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     await signOut();

@@ -41,16 +41,40 @@ const QuizSection = ({ languages }: QuizSectionProps) => {
               {
                 id: 1,
                 level: 1,
-                name: 'Basic Quiz',
-                description: 'Test your basic knowledge',
+                name: 'Hausa Basics Quiz',
+                description: 'Test your knowledge of basic Hausa words',
                 questions: [
                   {
-                    question: 'What does "Hola" mean?',
-                    options: ['Hello', 'Goodbye', 'Thank you', 'Please'],
+                    question: 'What does "Sannu" mean in English?',
+                    options: ['Hello', 'Thank you', 'Goodbye', 'Welldone'],
                     correct_answer: 'Hello',
                     points: 10,
                     difficulty: 'easy',
                     category: 'greetings'
+                  },
+                  {
+                    question: 'How do you say "Thank you" in Hausa?',
+                    options: ['Nagode', 'Gida', 'Ruwa', 'Kudi'],
+                    correct_answer: 'Nagode',
+                    points: 10,
+                    difficulty: 'easy',
+                    category: 'gratitude'
+                  },
+                  {
+                    question: 'What is the Hausa word for "Water"?',
+                    options: ['Ruwa', 'Abinci', 'Kasuwa', 'Makaranta'],
+                    correct_answer: 'Ruwa',
+                    points: 10,
+                    difficulty: 'easy',
+                    category: 'basics'
+                  },
+                  {
+                    question: 'Translate "School" to Hausa.',
+                    options: ['Makaranta', 'Kasuwa', 'Gida', 'Abinci'],
+                    correct_answer: 'Makaranta',
+                    points: 10,
+                    difficulty: 'easy',
+                    category: 'education'
                   }
                 ]
               }
