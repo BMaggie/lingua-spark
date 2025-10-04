@@ -58,7 +58,7 @@ const Footer = () => {
           >
             <div className="flex items-center space-x-2 mb-4">
               <BookOpen className="h-8 w-8 text-blue-400" />
-              <h3 className="text-2xl font-bold gradient-text">LinguaSpark</h3>
+              <h3 className="text-2xl font-bold gradient-text">NorthLing</h3>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Transform your language learning journey with AI-powered lessons and a global community of learners.
@@ -66,7 +66,7 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>hello@linguaspark.com</span>
+                <span>hello@northling.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
@@ -147,7 +147,7 @@ const Footer = () => {
           className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center"
         >
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 LinguaSpark. All rights reserved.
+            © 2024 NorthLing. All rights reserved.
           </div>
           
           {/* Social Links */}

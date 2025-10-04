@@ -13,12 +13,14 @@ interface TargetLanguageModalProps {
 const TargetLanguageModal = ({ isOpen, onClose, onLanguageSelect, baseLanguage }: TargetLanguageModalProps) => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
 
+  // Only local languages
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸', difficulty: 'Easy', speakers: '1.5B+ speakers' },
     { code: 'ha', name: 'Hausa', flag: '🇳🇬', difficulty: 'Medium', speakers: '50M+ speakers' },
     { code: 'fu', name: 'Fulani', flag: '🇳🇬', difficulty: 'Medium', speakers: '20M+ speakers' },
     { code: 'ff', name: 'Fulfulde', flag: '🇳🇬', difficulty: 'Medium', speakers: '15M+ speakers' }
   ];
+  
 
   // Filter out the base language
   const availableLanguages = languages.filter(lang => lang.name !== baseLanguage);

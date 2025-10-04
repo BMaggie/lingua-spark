@@ -1,6 +1,6 @@
 {
-  "name": "LinguaSpark - Language Learning",
-  "short_name": "LinguaSpark",
+  "name": "NorthLing - Language Learning",
+  "short_name": "NorthLing",
   "description": "Master languages with AI-powered learning",
   "start_url": "/",
   "display": "standalone",
@@ -9,9 +9,9 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/logo.png",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/png"
     },
     {
       "src": "/icon-192.png",
@@ -20,7 +20,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

@@ -6,19 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguagePreferences } from '@/hooks/useLanguagePreferences';
 
 const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'de', name: 'German', flag: '🇩🇪' },
-  { code: 'it', name: 'Italian', flag: '🇮🇹' },
-  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
-  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
-  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
-  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
-  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
-  // Nigerian languages
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-  { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
+ 
+  // Nigerian language  { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
   { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
   { code: 'ff', name: 'Fulfulde', flag: '🇳🇬' },
   { code: 'ti', name: 'Tiv', flag: '🇳🇬' },
@@ -36,7 +25,7 @@ interface BaseLanguageModalProps {
 }
 
 export default function BaseLanguageModal({ isOpen, onClose, onLanguageSelect, onLanguagesSet }: BaseLanguageModalProps) {
-  const [baseLanguage, setBaseLanguage] = useState("");
+  const [baseLanguage, setBaseLanguage] = useState("en");
   const [spokenLanguages, setSpokenLanguages] = useState<string[]>([]);
   const [targetLanguage, setTargetLanguage] = useState("");
   const { updatePreferences } = useLanguagePreferences();

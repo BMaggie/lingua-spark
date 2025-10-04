@@ -107,16 +107,9 @@ const LocalizedDashboard = ({
   const getLanguageName = (code: string) => {
     const names: { [key: string]: string } = {
       'en': 'English',
-      'es': 'Español', 
-      'fr': 'Français',
-      'de': 'Deutsch',
-      'pt': 'Português',
-      'zh': '中文',
-      'ja': '日本語',
-      'ko': '한국어',
-      'it': 'Italiano',
-      'ru': 'Русский',
-      'ar': 'العربية'
+      'ha': 'Hausa',
+      'fu': 'Fulani',
+      'ff': 'Fulfulde',
     };
     return names[code] || code;
   };

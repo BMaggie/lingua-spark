@@ -99,7 +99,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
           onClose();
           toast({
             title: "Account created!",
-            description: `Welcome to LinguaSpark, ${formData.name}!`,
+            description: `Welcome to NorthLing, ${formData.name}!`,
           });
         }
       } else if (mode === 'forgot-password') {
@@ -151,7 +151,7 @@ const AuthModal = ({ isOpen, onClose, mode, onModeChange, onAuthSuccess }: AuthM
   const getTitle = () => {
     switch (mode) {
       case 'login': return 'Welcome Back';
-      case 'signup': return 'Join LinguaSpark';
+  case 'signup': return 'Join NorthLing';
       case 'forgot-password': return 'Reset Password';
       default: return 'Welcome';
     }

@@ -129,7 +129,7 @@ const AuthPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Welcome to LinguaSpark
+            Welcome to NorthLing
           </CardTitle>
           <p className="text-gray-600">Sign in to continue your learning journey</p>
         </CardHeader>

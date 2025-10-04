@@ -8,7 +8,7 @@ interface LanguageSelectorProps {
 }
 
 const LanguageSelector = ({ onLanguageSelect }: LanguageSelectorProps) => {
-  const [baseLanguage, setBaseLanguage] = useState('');
+  const [baseLanguage, setBaseLanguage] = useState('en');
   const [targetLanguage, setTargetLanguage] = useState('');
 
   const languages = [

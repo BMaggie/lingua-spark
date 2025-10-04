@@ -1,14 +1,30 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import LanguageSelector from '@/components/LanguageSelector';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProgress } from '@/hooks/useUserProgress';
-import VocabularyCard from '@/components/VocabularyCard';
-import QuizSection from '@/components/QuizSection';
+// import VocabularyCard from '@/components/VocabularyCard';
+// import QuizSection from '@/components/QuizSection';
+
+// Dynamic component loading based on selected language
+const languageComponentMap = {
+  // Components will be loaded dynamically from the new unified language system
+};
+
+const DynamicLanguageComponent = ({ type, languages }) => {
+  return (
+    <div className="text-center p-8">
+      Loading content for {languages.target} {type}...
+      <p className="text-sm text-gray-500 mt-2">Content will be available soon.</p>
+    </div>
+  );
+};
 import Leaderboard from '@/components/Leaderboard';
 import { 
   BookOpen, 
@@ -28,6 +44,7 @@ const DashboardPage = () => {
   const { userProfile, loading: userLoading } = useUserProgress();
   const navigate = useNavigate();
   const [selectedLanguages, setSelectedLanguages] = useState({ base: '', target: '' });
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentSection, setCurrentSection] = useState('dashboard');
 
   useEffect(() => {
@@ -83,9 +100,9 @@ const DashboardPage = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg">
-                  <span className="text-white text-lg">✨</span>
+                  <span className="text-white text-lg"></span>
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">LinguaSpark</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">NorthLing</h1>
               </div>
               <Badge variant="secondary" className="ml-4">
                 {userRole === 'admin' ? 'Admin' : 'Student'}
@@ -109,7 +126,7 @@ const DashboardPage = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b">
+      {/* <nav className="bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="flex space-x-8">
             <Button
@@ -146,7 +163,7 @@ const DashboardPage = () => {
             </Button>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -167,9 +184,80 @@ const DashboardPage = () => {
                   <span>Learning {selectedLanguages.target}</span>
                   <span>•</span>
                   <span>From {selectedLanguages.base}</span>
+                  <Button variant="outline" size="sm" className="ml-4" onClick={() => setShowLanguageModal(true)}>
+                    Change Language
+                  </Button>
                 </div>
+
+                <Dialog open={showLanguageModal} onOpenChange={setShowLanguageModal}>
+                  <DialogContent className="max-w-lg">
+                    <LanguageSelector
+                      onLanguageSelect={(langs) => {
+                        setSelectedLanguages(langs);
+                        setShowLanguageModal(false);
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
+
+            {/* Learning Paths */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <BookOpen className="h-5 w-5 text-blue-600" />
+                    <span>Vocabulary</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-blue-600 mb-4">Learn and practice new words in {selectedLanguages.target}</p>
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => navigate('/vocabulary')}
+                  >
+                    Start Learning
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Brain className="h-5 w-5 text-purple-600" />
+                    <span>Lessons</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-purple-600 mb-4">Interactive lessons to improve your {selectedLanguages.target}</p>
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={() => navigate('/course')}
+                  >
+                    Start Learning
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Trophy className="h-5 w-5 text-green-600" />
+                    <span>Quiz</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-green-600 mb-4">Test your knowledge with interactive quizzes</p>
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => navigate('/quiz')}
+                  >
+                    Start Quiz
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Enhanced Analytics Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -348,12 +436,28 @@ const DashboardPage = () => {
           </div>
         )}
 
+
+
+
         {currentSection === 'vocabulary' && (
-          <VocabularyCard languages={selectedLanguages} />
+          <DynamicLanguageComponent
+            type="Vocabulary"
+            languages={selectedLanguages}
+          />
         )}
 
         {currentSection === 'quiz' && (
-          <QuizSection languages={selectedLanguages} />
+          <DynamicLanguageComponent
+            type="Quiz"
+            languages={selectedLanguages}
+          />
+        )}
+
+        {currentSection === 'lessons' && (
+          <DynamicLanguageComponent
+            type="Lessons"
+            languages={selectedLanguages}
+          />
         )}
 
         {currentSection === 'leaderboard' && (

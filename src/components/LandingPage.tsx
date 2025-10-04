@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, Star, Globe, Users, Brain, Trophy, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BaseLanguageModal from './BaseLanguageModal';
 import TargetLanguageModal from './TargetLanguageModal';
@@ -124,9 +124,10 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <Sparkles className="h-8 w-8 text-blue-600 animate-pulse-glow" />
+
+              {/* <img src="/logo.png" alt="logo" width={50} /> */}
               <h1 className="text-2xl font-bold gradient-text">
-                LinguaSpark
+                NorthLing
               </h1>
             </motion.div>
             <div className="flex items-center space-x-4">
@@ -249,7 +250,7 @@ const LandingPage = ({ onLanguageSelect }: LandingPageProps) => {
               Learning Made Simple
             </h3>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Discover why millions choose LinguaSpark for fast, fun, and effective language learning
+              Discover why millions choose NorthLing for fast, fun, and effective language learning
             </p>
           </ScrollAnimation>
           

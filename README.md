@@ -1,8 +1,8 @@
-# LinguaSpark - Interactive Language Learning Platform
+# NorthLing - Interactive Language Learning Platform
 
 ## Overview
 
-LinguaSpark is a modern, interactive language learning platform built with React, TypeScript, and Supabase. It provides an engaging environment for users to learn new languages through vocabulary quizzes, progress tracking, and community features.
+NorthLing is a modern, interactive language learning platform built with React, TypeScript, and Supabase. It provides an engaging environment for users to learn new languages through vocabulary quizzes, progress tracking, and community features.
 
 ## Features
 
@@ -86,8 +86,8 @@ If you want to work locally using your own IDE, you can clone this repo and push
 ### Environment Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/DavidManiIbrahim/lingua-spark-path.git
-cd lingua-spark-path
+git clone https://github.com/DavidManiIbrahim/northling-path.git
+cd northling-path
 ```
 
 2. Install dependencies:
@@ -121,7 +121,7 @@ bun dev
 
 ## Project Structure
 ```
-lingua-spark-path/
+northling-path/
 ├── src/
 │   ├── components/      # Reusable UI components
 │   ├── hooks/          # Custom React hooks
